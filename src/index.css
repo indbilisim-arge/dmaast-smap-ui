@@ -1,0 +1,472 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-surface-100 text-surface-800;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
+
+  /* ACCESS-413: Safe word-breaking for long words (e.g. German) */
+  p, span, label, h1, h2, h3, h4, h5, h6, td, th, li, a, button {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+}
+
+@layer components {
+  .kpi-card {
+    @apply bg-white rounded-lg shadow-card transition-shadow duration-200 hover:shadow-card-hover;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .alert-card {
+    @apply rounded-lg border overflow-hidden;
+  }
+
+  .chart-container {
+    @apply overflow-hidden relative;
+  }
+
+  .nav-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-surface-600 hover:bg-surface-100 hover:text-surface-900 transition-colors duration-150;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    min-width: 0;
+  }
+
+  .nav-item-active {
+    @apply bg-primary-50 text-primary-600 font-medium;
+  }
+
+  .btn-primary {
+    @apply bg-primary-500 text-white px-4 py-2 rounded-lg hover:bg-primary-600 transition-colors duration-150 font-medium;
+  }
+
+  .btn-secondary {
+    @apply bg-surface-200 text-surface-700 px-4 py-2 rounded-lg hover:bg-surface-300 transition-colors duration-150 font-medium;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2 py-0.5 rounded text-xs font-medium;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .badge-critical {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .badge-warning {
+    @apply bg-amber-100 text-amber-800;
+  }
+
+  .badge-success {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .badge-info {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .card-panel {
+    @apply bg-white rounded-xl shadow-card overflow-hidden;
+  }
+
+  .text-truncate {
+    @apply overflow-hidden text-ellipsis whitespace-nowrap;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-surface-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-surface-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-surface-400;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.high-contrast {
+  --hc-text: #000000;
+  --hc-bg: #ffffff;
+  --hc-border: #000000;
+  --hc-primary: #0044aa;
+  --hc-accent: #005500;
+}
+
+.high-contrast body {
+  background-color: var(--hc-bg) !important;
+  color: var(--hc-text) !important;
+}
+
+.high-contrast .bg-white,
+.high-contrast .bg-surface-50,
+.high-contrast .bg-surface-100 {
+  background-color: var(--hc-bg) !important;
+  border-color: var(--hc-border) !important;
+}
+
+.high-contrast .text-surface-400,
+.high-contrast .text-surface-500,
+.high-contrast .text-surface-600,
+.high-contrast .text-surface-700 {
+  color: var(--hc-text) !important;
+}
+
+.high-contrast .border-surface-100,
+.high-contrast .border-surface-200 {
+  border-color: var(--hc-border) !important;
+}
+
+.high-contrast .bg-primary-50,
+.high-contrast .bg-primary-100 {
+  background-color: #cce0ff !important;
+}
+
+.high-contrast .text-primary-500,
+.high-contrast .text-primary-600,
+.high-contrast .text-primary-700 {
+  color: var(--hc-primary) !important;
+}
+
+.high-contrast .bg-primary-500 {
+  background-color: var(--hc-primary) !important;
+}
+
+.high-contrast .shadow-card,
+.high-contrast .shadow-lg {
+  box-shadow: 0 0 0 2px var(--hc-border) !important;
+}
+
+.high-contrast input,
+.high-contrast select,
+.high-contrast textarea {
+  border-width: 2px !important;
+  border-color: var(--hc-border) !important;
+}
+
+.high-contrast button {
+  border: 2px solid var(--hc-border) !important;
+}
+
+.high-contrast .btn-primary,
+.high-contrast button.bg-primary-500 {
+  background-color: var(--hc-primary) !important;
+  border-color: var(--hc-primary) !important;
+}
+
+/* ── Lite Mode ─────────────────────────────────────────────────────────────── */
+/* HCD-118: Larger text, reduced information density, simpler layouts         */
+
+.lite-mode {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+/* --- Typography scaling (proportional, no overlap) --- */
+.lite-mode .text-xs  { font-size: 0.8125rem !important; line-height: 1.4 !important; }
+.lite-mode .text-sm  { font-size: 0.9375rem !important; line-height: 1.5 !important; }
+.lite-mode .text-base { font-size: 1.0625rem !important; }
+.lite-mode .text-lg  { font-size: 1.25rem !important; }
+.lite-mode .text-xl  { font-size: 1.5rem !important; }
+.lite-mode .text-2xl { font-size: 1.75rem !important; }
+
+/* --- Grid simplification (prevent cramming) --- */
+.lite-mode .grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+.lite-mode .grid-cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.lite-mode .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.lite-mode .grid-cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.lite-mode .grid-cols-6 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+
+/* Preserve 2-col for md+ grids (responsive awareness) */
+@media (min-width: 768px) {
+  .lite-mode .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (min-width: 1280px) {
+  .lite-mode .xl\:grid-cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+/* --- Spacing (slightly more breathing room, not extreme) --- */
+.lite-mode .gap-2 { gap: 0.625rem !important; }
+.lite-mode .gap-3 { gap: 0.875rem !important; }
+.lite-mode .gap-4 { gap: 1.125rem !important; }
+.lite-mode .gap-6 { gap: 1.5rem !important; }
+
+/* --- Touch targets --- */
+.lite-mode button,
+.lite-mode a[role="button"],
+.lite-mode [role="switch"] {
+  min-height: 40px;
+}
+
+.lite-mode input,
+.lite-mode select,
+.lite-mode textarea {
+  min-height: 44px;
+  font-size: 0.9375rem !important;
+}
+
+/* --- KPI cards: allow content to wrap, remove fixed height --- */
+.lite-mode .kpi-card {
+  height: auto !important;
+  min-height: auto !important;
+}
+.lite-mode .h-32,
+.lite-mode .h-36,
+.lite-mode .h-40 {
+  height: auto !important;
+}
+
+/* --- DENSITY REDUCTION: hide secondary/decorative elements --- */
+
+/* KPI sparkline mini-charts */
+.lite-mode .kpi-card .w-16.h-8 { display: none !important; }
+
+/* KPI progress bars (keep the value text, hide the bar visual) */
+.lite-mode .kpi-card .h-1\.5 { display: none !important; }
+
+/* Cluster badge on KPI cards */
+.lite-mode .kpi-card .rounded-full.text-xs { display: none !important; }
+
+/* Trend percentage on KPI cards - keep trend icon, hide detail */
+.lite-mode .kpi-card .text-sm.font-medium { font-size: 0.8125rem !important; }
+
+/* Alert card source line */
+.lite-mode [data-lite-hide="true"] { display: none !important; }
+
+/* Timestamps and secondary metadata in cards */
+.lite-mode .lite-hide { display: none !important; }
+
+/* Chart legends (reduce visual noise) */
+.lite-mode .recharts-legend-wrapper { display: none !important; }
+
+/* "Learn more" links in help popovers */
+.lite-mode .inline-block.mt-2.text-xs.font-medium { display: none !important; }
+
+/* Strategy ranking expanded detail panels - simplify */
+.lite-mode .grid-cols-5.gap-4 .w-full.bg-surface-200 { display: none !important; }
+
+/* Dashboard: hide quick-stats secondary info */
+.lite-mode .text-surface-400.text-xs { font-size: 0.75rem !important; }
+
+/* --- Cards: prevent text overflow --- */
+.lite-mode .truncate {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+.lite-mode .line-clamp-1,
+.lite-mode .line-clamp-2 {
+  -webkit-line-clamp: unset !important;
+  display: block !important;
+}
+
+/* --- Nav items: bigger hit area --- */
+.lite-mode .nav-item {
+  padding: 0.625rem 0.75rem !important;
+  font-size: 0.9375rem !important;
+}
+
+/* --- Badge text readable --- */
+.lite-mode .badge {
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.5rem !important;
+}
+
+/* --- Sidebar wider to fit larger text --- */
+.lite-mode aside.w-64 {
+  width: 18rem !important;
+}
+
+/* --- Chart containers: keep usable size --- */
+.lite-mode .h-64 { height: 18rem !important; }
+.lite-mode .h-80 { height: 22rem !important; }
+
+/* --- 2-col layout simplification (side-by-side charts → stacked) --- */
+.lite-mode .grid.grid-cols-2.gap-6 {
+  grid-template-columns: 1fr !important;
+}
+
+html[data-font-size="large"] {
+  font-size: 18px;
+}
+
+html[data-font-size="xlarge"] {
+  font-size: 20px;
+}
+
+.reduce-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+*:focus-visible {
+  outline: 2px solid #0066b3;
+  outline-offset: 2px;
+}
+
+/* ── Color Blind Modes ────────────────────────────────────────────────────── */
+
+/* Deuteranopia: red-green deficiency (green-weak).
+   Red → orange-amber, Green → blue */
+.cb-deuteranopia {
+  --cb-success: #0077bb;
+  --cb-success-light: #cce5f7;
+  --cb-success-dark: #005588;
+  --cb-danger:  #ee7700;
+  --cb-danger-light: #fde8c8;
+  --cb-danger-dark:  #bb5500;
+  --cb-warning: #f5c400;
+  --cb-warning-light: #fef6cc;
+  --cb-info:    #3b82f6;
+  --cb-info-light: #dbeafe;
+}
+
+/* Protanopia: red-green deficiency (red-blind).
+   Red → golden-yellow, Green → blue */
+.cb-protanopia {
+  --cb-success: #0077bb;
+  --cb-success-light: #cce5f7;
+  --cb-success-dark: #005588;
+  --cb-danger:  #ddaa33;
+  --cb-danger-light: #fdf3d0;
+  --cb-danger-dark:  #aa7700;
+  --cb-warning: #aa3377;
+  --cb-warning-light: #f3d0e5;
+  --cb-info:    #33bbee;
+  --cb-info-light: #d0f2fc;
+}
+
+/* Tritanopia: blue-yellow deficiency.
+   Blue → dark-red/crimson, Yellow/Amber → purple */
+.cb-tritanopia {
+  --cb-success: #009988;
+  --cb-success-light: #ccede9;
+  --cb-success-dark: #006655;
+  --cb-danger:  #cc3311;
+  --cb-danger-light: #f7d5cf;
+  --cb-danger-dark:  #991100;
+  --cb-warning: #ee3377;
+  --cb-warning-light: #fcd5e3;
+  --cb-info:    #332288;
+  --cb-info-light: #d5d0f0;
+}
+
+/* Apply color-blind palettes to status-bearing elements */
+.cb-deuteranopia .bg-green-50,  .cb-protanopia .bg-green-50,  .cb-tritanopia .bg-green-50  { background-color: var(--cb-success-light) !important; }
+.cb-deuteranopia .bg-green-100, .cb-protanopia .bg-green-100, .cb-tritanopia .bg-green-100 { background-color: var(--cb-success-light) !important; }
+.cb-deuteranopia .bg-green-500, .cb-protanopia .bg-green-500, .cb-tritanopia .bg-green-500 { background-color: var(--cb-success) !important; }
+.cb-deuteranopia .bg-green-600, .cb-protanopia .bg-green-600, .cb-tritanopia .bg-green-600 { background-color: var(--cb-success-dark) !important; }
+.cb-deuteranopia .text-green-600,.cb-protanopia .text-green-600,.cb-tritanopia .text-green-600 { color: var(--cb-success-dark) !important; }
+.cb-deuteranopia .text-green-500,.cb-protanopia .text-green-500,.cb-tritanopia .text-green-500 { color: var(--cb-success) !important; }
+.cb-deuteranopia .border-green-200,.cb-protanopia .border-green-200,.cb-tritanopia .border-green-200 { border-color: var(--cb-success-light) !important; }
+
+.cb-deuteranopia .bg-red-50,   .cb-protanopia .bg-red-50,   .cb-tritanopia .bg-red-50   { background-color: var(--cb-danger-light) !important; }
+.cb-deuteranopia .bg-red-100,  .cb-protanopia .bg-red-100,  .cb-tritanopia .bg-red-100  { background-color: var(--cb-danger-light) !important; }
+.cb-deuteranopia .bg-red-500,  .cb-protanopia .bg-red-500,  .cb-tritanopia .bg-red-500  { background-color: var(--cb-danger) !important; }
+.cb-deuteranopia .bg-red-600,  .cb-protanopia .bg-red-600,  .cb-tritanopia .bg-red-600  { background-color: var(--cb-danger-dark) !important; }
+.cb-deuteranopia .text-red-600,.cb-protanopia .text-red-600,.cb-tritanopia .text-red-600 { color: var(--cb-danger-dark) !important; }
+.cb-deuteranopia .text-red-500,.cb-protanopia .text-red-500,.cb-tritanopia .text-red-500 { color: var(--cb-danger) !important; }
+.cb-deuteranopia .border-red-200,.cb-protanopia .border-red-200,.cb-tritanopia .border-red-200 { border-color: var(--cb-danger-light) !important; }
+
+.cb-deuteranopia .bg-amber-50,   .cb-protanopia .bg-amber-50,   .cb-tritanopia .bg-amber-50   { background-color: var(--cb-warning-light) !important; }
+.cb-deuteranopia .bg-amber-100,  .cb-protanopia .bg-amber-100,  .cb-tritanopia .bg-amber-100  { background-color: var(--cb-warning-light) !important; }
+.cb-deuteranopia .text-amber-600,.cb-protanopia .text-amber-600,.cb-tritanopia .text-amber-600 { color: var(--cb-warning) !important; }
+.cb-deuteranopia .text-amber-700,.cb-protanopia .text-amber-700,.cb-tritanopia .text-amber-700 { color: var(--cb-warning) !important; }
+.cb-deuteranopia .border-amber-200,.cb-protanopia .border-amber-200,.cb-tritanopia .border-amber-200 { border-color: var(--cb-warning-light) !important; }
+
+.cb-deuteranopia .bg-blue-50,  .cb-protanopia .bg-blue-50,  .cb-tritanopia .bg-blue-50  { background-color: var(--cb-info-light) !important; }
+.cb-deuteranopia .bg-blue-100, .cb-protanopia .bg-blue-100, .cb-tritanopia .bg-blue-100 { background-color: var(--cb-info-light) !important; }
+.cb-deuteranopia .text-blue-600,.cb-protanopia .text-blue-600,.cb-tritanopia .text-blue-600 { color: var(--cb-info) !important; }
+.cb-deuteranopia .border-blue-200,.cb-protanopia .border-blue-200,.cb-tritanopia .border-blue-200 { border-color: var(--cb-info-light) !important; }
+
+/* Alert / badge overrides */
+.cb-deuteranopia .badge-critical, .cb-protanopia .badge-critical, .cb-tritanopia .badge-critical {
+  background-color: var(--cb-danger-light) !important;
+  color: var(--cb-danger-dark) !important;
+}
+.cb-deuteranopia .badge-success, .cb-protanopia .badge-success, .cb-tritanopia .badge-success {
+  background-color: var(--cb-success-light) !important;
+  color: var(--cb-success-dark) !important;
+}
+.cb-deuteranopia .badge-warning, .cb-protanopia .badge-warning, .cb-tritanopia .badge-warning {
+  background-color: var(--cb-warning-light) !important;
+  color: var(--cb-warning) !important;
+}
+
+/* KPI card cluster left-border overrides */
+.cb-deuteranopia .border-l-4.border-green-500,
+.cb-protanopia  .border-l-4.border-green-500,
+.cb-tritanopia  .border-l-4.border-green-500 { border-left-color: var(--cb-success) !important; }
+
+.cb-deuteranopia .border-l-4.border-red-500,
+.cb-protanopia  .border-l-4.border-red-500,
+.cb-tritanopia  .border-l-4.border-red-500  { border-left-color: var(--cb-danger) !important; }
+
+/* Progress bar colors */
+.cb-deuteranopia .bg-green-500.h-full,
+.cb-protanopia  .bg-green-500.h-full,
+.cb-tritanopia  .bg-green-500.h-full { background-color: var(--cb-success) !important; }
+
+.cb-deuteranopia .bg-red-500.h-full,
+.cb-protanopia  .bg-red-500.h-full,
+.cb-tritanopia  .bg-red-500.h-full  { background-color: var(--cb-danger) !important; }

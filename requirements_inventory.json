@@ -1,0 +1,497 @@
+[
+  {
+    "id": "ACCESS-400",
+    "area": "ui_frontend",
+    "text": "ACCESS-400: Accessibility and Universal Design ● ACCESS-401: The platform must comply with WCAG (Web Content Accessibility Guidelines) 2.1 Level AA standards. ● ACCESS-402: The entire interface must be fully navigable and operable using only a keyboard (e.g., Tab, Enter, Space keys). ● ACCESS-403: The interface must be compatible with screen reader software (e.g., NVDA, JAWS), including \"alt\" text for all images and \"labels\" for all form controls."
+  },
+  {
+    "id": "ACCESS-401",
+    "area": "ui_frontend",
+    "text": "● ACCESS-401: The platform must comply with WCAG (Web Content Accessibility Guidelines) 2.1 Level AA standards. ● ACCESS-402: The entire interface must be fully navigable and operable using only a keyboard (e.g., Tab, Enter, Space keys). ● ACCESS-403: The interface must be compatible with screen reader software (e.g., NVDA, JAWS), including \"alt\" text for all images and \"labels\" for all form controls. ● ACCESS-404: The UI must support browser-level text zoom up to 200% without"
+  },
+  {
+    "id": "ACCESS-402",
+    "area": "ui_frontend",
+    "text": "● ACCESS-402: The entire interface must be fully navigable and operable using only a keyboard (e.g., Tab, Enter, Space keys). ● ACCESS-403: The interface must be compatible with screen reader software (e.g., NVDA, JAWS), including \"alt\" text for all images and \"labels\" for all form controls. ● ACCESS-404: The UI must support browser-level text zoom up to 200% without breaking the layout or requiring horizontal scrolling. ● ACCESS-405: A \"High-Contrast Mode\" theme option must be available for users"
+  },
+  {
+    "id": "ACCESS-403",
+    "area": "ui_frontend",
+    "text": "● ACCESS-403: The interface must be compatible with screen reader software (e.g., NVDA, JAWS), including \"alt\" text for all images and \"labels\" for all form controls. ● ACCESS-404: The UI must support browser-level text zoom up to 200% without breaking the layout or requiring horizontal scrolling. ● ACCESS-405: A \"High-Contrast Mode\" theme option must be available for users with low vision. ACCESS-410: Multilingual Support"
+  },
+  {
+    "id": "ACCESS-404",
+    "area": "ui_frontend",
+    "text": "● ACCESS-404: The UI must support browser-level text zoom up to 200% without breaking the layout or requiring horizontal scrolling. ● ACCESS-405: A \"High-Contrast Mode\" theme option must be available for users with low vision. ACCESS-410: Multilingual Support ● ACCESS-411: The interface must support at least English and the native languages of the industrial partners. ● ACCESS-412: The user must be able to change the platform language from a"
+  },
+  {
+    "id": "ACCESS-405",
+    "area": "ui_frontend",
+    "text": "● ACCESS-405: A \"High-Contrast Mode\" theme option must be available for users with low vision. ACCESS-410: Multilingual Support ● ACCESS-411: The interface must support at least English and the native languages of the industrial partners. ● ACCESS-412: The user must be able to change the platform language from a \"Settings\" menu, and this preference must be saved. ● ACCESS-413: The UI design must be flexible enough to accommodate varying"
+  },
+  {
+    "id": "ACCESS-410",
+    "area": "ui_frontend",
+    "text": "ACCESS-410: Multilingual Support ● ACCESS-411: The interface must support at least English and the native languages of the industrial partners. ● ACCESS-412: The user must be able to change the platform language from a \"Settings\" menu, and this preference must be saved. ● ACCESS-413: The UI design must be flexible enough to accommodate varying text lengths from different languages (e.g., long words in German) without breaking the layout (i.e., no text overflow)."
+  },
+  {
+    "id": "ACCESS-411",
+    "area": "backend_or_integration",
+    "text": "● ACCESS-411: The interface must support at least English and the native languages of the industrial partners. ● ACCESS-412: The user must be able to change the platform language from a \"Settings\" menu, and this preference must be saved. ● ACCESS-413: The UI design must be flexible enough to accommodate varying text lengths from different languages (e.g., long words in German) without breaking the layout (i.e., no text overflow). ACCESS-420: Training Integration"
+  },
+  {
+    "id": "ACCESS-412",
+    "area": "backend_or_integration",
+    "text": "● ACCESS-412: The user must be able to change the platform language from a \"Settings\" menu, and this preference must be saved. ● ACCESS-413: The UI design must be flexible enough to accommodate varying text lengths from different languages (e.g., long words in German) without breaking the layout (i.e., no text overflow). ACCESS-420: Training Integration ● ACCESS-421: A \"Help\" icon (?) must be present in complex sections (e.g., CDT simulator settings) that links directly to the relevant training module (T1.3) or"
+  },
+  {
+    "id": "ACCESS-413",
+    "area": "backend_or_integration",
+    "text": "● ACCESS-413: The UI design must be flexible enough to accommodate varying text lengths from different languages (e.g., long words in German) without breaking the layout (i.e., no text overflow). ACCESS-420: Training Integration ● ACCESS-421: A \"Help\" icon (?) must be present in complex sections (e.g., CDT simulator settings) that links directly to the relevant training module (T1.3) or video tutorial. ● ACCESS-422: All error messages must use language consistent with the T1.3"
+  },
+  {
+    "id": "ACCESS-420",
+    "area": "backend_or_integration",
+    "text": "ACCESS-420: Training Integration ● ACCESS-421: A \"Help\" icon (?) must be present in complex sections (e.g., CDT simulator settings) that links directly to the relevant training module (T1.3) or video tutorial. ● ACCESS-422: All error messages must use language consistent with the T1.3 training materials and provide a clear suggestion for resolution (e.g., \"Invalid date. Please use DD.MM.YYYY format.\"). ● ACCESS-423: A dedicated \"Resources\" or \"Help Center\" page must be available"
+  },
+  {
+    "id": "ACCESS-421",
+    "area": "ui_frontend",
+    "text": "● ACCESS-421: A \"Help\" icon (?) must be present in complex sections (e.g., CDT simulator settings) that links directly to the relevant training module (T1.3) or video tutorial. ● ACCESS-422: All error messages must use language consistent with the T1.3 training materials and provide a clear suggestion for resolution (e.g., \"Invalid date. Please use DD.MM.YYYY format.\"). ● ACCESS-423: A dedicated \"Resources\" or \"Help Center\" page must be available where users can download training manuals (PDFs) or access tutorials."
+  },
+  {
+    "id": "ACCESS-422",
+    "area": "ui_frontend",
+    "text": "● ACCESS-422: All error messages must use language consistent with the T1.3 training materials and provide a clear suggestion for resolution (e.g., \"Invalid date. Please use DD.MM.YYYY format.\"). ● ACCESS-423: A dedicated \"Resources\" or \"Help Center\" page must be available where users can download training manuals (PDFs) or access tutorials. -- 9 of 9 -- "
+  },
+  {
+    "id": "ACCESS-423",
+    "area": "ui_frontend",
+    "text": "● ACCESS-423: A dedicated \"Resources\" or \"Help Center\" page must be available where users can download training manuals (PDFs) or access tutorials. -- 9 of 9 -- "
+  },
+  {
+    "id": "FUNC-200",
+    "area": "ui_frontend",
+    "text": "FUNC-200: Information Presentation (Scoreboard) ● FUNC-201: The main dashboard must feature “timely scoreboard” components displaying critical data in a summarised manner, ensuring an adequate amount of information is shown to avoid overloading the view. ● FUNC-202: Each scoreboard element must provide direct access to its definition and interpretation, explaining what the metric represents and how it should be understood. ● FUNC-203: Scoreboard data must auto-refresh (near real-time) based on the"
+  },
+  {
+    "id": "FUNC-201",
+    "area": "backend_or_integration",
+    "text": "● FUNC-201: The main dashboard must feature “timely scoreboard” components displaying critical data in a summarised manner, ensuring an adequate amount of information is shown to avoid overloading the view. ● FUNC-202: Each scoreboard element must provide direct access to its definition and interpretation, explaining what the metric represents and how it should be understood. ● FUNC-203: Scoreboard data must auto-refresh (near real-time) based on the backend data stream, with a maximum latency of 1 minute."
+  },
+  {
+    "id": "FUNC-202",
+    "area": "backend_or_integration",
+    "text": "● FUNC-202: Each scoreboard element must provide direct access to its definition and interpretation, explaining what the metric represents and how it should be understood. ● FUNC-203: Scoreboard data must auto-refresh (near real-time) based on the backend data stream, with a maximum latency of 1 minute. ● FUNC-204: Users must have an optional manual refresh action (e.g., refresh button) to request an immediate update of scoreboard data. ● FUNC-205: The user must be able to pause or manually trigger the auto-refresh"
+  },
+  {
+    "id": "FUNC-203",
+    "area": "backend_or_integration",
+    "text": "● FUNC-203: Scoreboard data must auto-refresh (near real-time) based on the backend data stream, with a maximum latency of 1 minute. ● FUNC-204: Users must have an optional manual refresh action (e.g., refresh button) to request an immediate update of scoreboard data. ● FUNC-205: The user must be able to pause or manually trigger the auto-refresh function for scoreboards. ● FUNC-206: Scoreboard elements must link to relevant training or help materials (e.g., tooltips, documentation pages, or tutorials) when available."
+  },
+  {
+    "id": "FUNC-204",
+    "area": "ui_frontend",
+    "text": "● FUNC-204: Users must have an optional manual refresh action (e.g., refresh button) to request an immediate update of scoreboard data. ● FUNC-205: The user must be able to pause or manually trigger the auto-refresh function for scoreboards. ● FUNC-206: Scoreboard elements must link to relevant training or help materials (e.g., tooltips, documentation pages, or tutorials) when available. ● FUNC-207: Each scoreboard element must provide transparency regarding its underlying data source(s), including the originating system or dataset."
+  },
+  {
+    "id": "FUNC-205",
+    "area": "ui_frontend",
+    "text": "● FUNC-205: The user must be able to pause or manually trigger the auto-refresh function for scoreboards. ● FUNC-206: Scoreboard elements must link to relevant training or help materials (e.g., tooltips, documentation pages, or tutorials) when available. ● FUNC-207: Each scoreboard element must provide transparency regarding its underlying data source(s), including the originating system or dataset. ● FUNC-208: Access to definitions, training materials, and data source information must be available via non-intrusive interactions (e.g., hover, info icon, or"
+  },
+  {
+    "id": "FUNC-206",
+    "area": "ui_frontend",
+    "text": "● FUNC-206: Scoreboard elements must link to relevant training or help materials (e.g., tooltips, documentation pages, or tutorials) when available. ● FUNC-207: Each scoreboard element must provide transparency regarding its underlying data source(s), including the originating system or dataset. ● FUNC-208: Access to definitions, training materials, and data source information must be available via non-intrusive interactions (e.g., hover, info icon, or contextual link). FUNC-210: Decision Support System (MO-DDSS) Interaction"
+  },
+  {
+    "id": "FUNC-207",
+    "area": "ui_frontend",
+    "text": "● FUNC-207: Each scoreboard element must provide transparency regarding its underlying data source(s), including the originating system or dataset. ● FUNC-208: Access to definitions, training materials, and data source information must be available via non-intrusive interactions (e.g., hover, info icon, or contextual link). FUNC-210: Decision Support System (MO-DDSS) Interaction ● FUNC-211: The interface must present the user a list of optimization goals (e.g., energy efficiency, production efficiency, resource consumption, costs) and a"
+  },
+  {
+    "id": "FUNC-208",
+    "area": "ui_frontend",
+    "text": "● FUNC-208: Access to definitions, training materials, and data source information must be available via non-intrusive interactions (e.g., hover, info icon, or contextual link). FUNC-210: Decision Support System (MO-DDSS) Interaction ● FUNC-211: The interface must present the user a list of optimization goals (e.g., energy efficiency, production efficiency, resource consumption, costs) and a dashboard through which users can set the priority (weights) of each objective for their own profile."
+  },
+  {
+    "id": "FUNC-210",
+    "area": "ui_frontend",
+    "text": "FUNC-210: Decision Support System (MO-DDSS) Interaction ● FUNC-211: The interface must present the user a list of optimization goals (e.g., energy efficiency, production efficiency, resource consumption, costs) and a dashboard through which users can set the priority (weights) of each objective for their own profile. ● FUNC-212: The optimization goals and their default priorities must be user-specific, reflecting the user’s role/team and configuration. ● FUNC-213: The interface must support a combination of manager-defined"
+  },
+  {
+    "id": "FUNC-211",
+    "area": "ui_frontend",
+    "text": "● FUNC-211: The interface must present the user a list of optimization goals (e.g., energy efficiency, production efficiency, resource consumption, costs) and a dashboard through which users can set the priority (weights) of each objective for their own profile. ● FUNC-212: The optimization goals and their default priorities must be user-specific, reflecting the user’s role/team and configuration. ● FUNC-213: The interface must support a combination of manager-defined priorities (baseline/default weights) and a personalized section where users can"
+  },
+  {
+    "id": "FUNC-212",
+    "area": "ui_frontend",
+    "text": "● FUNC-212: The optimization goals and their default priorities must be user-specific, reflecting the user’s role/team and configuration. ● FUNC-213: The interface must support a combination of manager-defined priorities (baseline/default weights) and a personalized section where users can organize and adjust objectives as needed (within permitted limits). -- 5 of 9 -- "
+  },
+  {
+    "id": "FUNC-213",
+    "area": "ui_frontend",
+    "text": "● FUNC-213: The interface must support a combination of manager-defined priorities (baseline/default weights) and a personalized section where users can organize and adjust objectives as needed (within permitted limits). -- 5 of 9 -- ● FUNC-215: Ranking list with the most suitable strategy recommended for the selected scenario and objectives priority. Enable the user to click on any strategy"
+  },
+  {
+    "id": "FUNC-214",
+    "area": "backend_or_integration",
+    "text": "to see all the details (i.e. FUNC-214) ● FUNC-216: For each recommended action, MO-DDSS output (e.g. orders/jobs scheduling, services assignment, workforce assignment, resources use), the user must have options to \"Apply\", \"Dismiss\", “Add feedback” or \"See Details.\" ● FUNC-217: In “See Details” tab for each action there will be disclosed: 1) Track-explanation of the suggested actions; 2) Impact foresaw in the KPIs; 3) Step-by-step guidance on how to execute the action. ● FUNC-218: The interface will allow the user to select multiple simulation"
+  },
+  {
+    "id": "FUNC-215",
+    "area": "backend_or_integration",
+    "text": "● FUNC-215: Ranking list with the most suitable strategy recommended for the selected scenario and objectives priority. Enable the user to click on any strategy to see all the details (i.e. FUNC-214) ● FUNC-216: For each recommended action, MO-DDSS output (e.g. orders/jobs scheduling, services assignment, workforce assignment, resources use), the user must have options to \"Apply\", \"Dismiss\", “Add feedback” or \"See Details.\" ● FUNC-217: In “See Details” tab for each action there will be disclosed: 1) Track-explanation of the suggested actions; 2) Impact foresaw in the KPIs; 3)"
+  },
+  {
+    "id": "FUNC-216",
+    "area": "backend_or_integration",
+    "text": "● FUNC-216: For each recommended action, MO-DDSS output (e.g. orders/jobs scheduling, services assignment, workforce assignment, resources use), the user must have options to \"Apply\", \"Dismiss\", “Add feedback” or \"See Details.\" ● FUNC-217: In “See Details” tab for each action there will be disclosed: 1) Track-explanation of the suggested actions; 2) Impact foresaw in the KPIs; 3) Step-by-step guidance on how to execute the action. ● FUNC-218: The interface will allow the user to select multiple simulation scenarios, such as the real/current production scenario or disruptive scenarios"
+  },
+  {
+    "id": "FUNC-217",
+    "area": "ui_frontend",
+    "text": "● FUNC-217: In “See Details” tab for each action there will be disclosed: 1) Track-explanation of the suggested actions; 2) Impact foresaw in the KPIs; 3) Step-by-step guidance on how to execute the action. ● FUNC-218: The interface will allow the user to select multiple simulation scenarios, such as the real/current production scenario or disruptive scenarios simulated with the C-DT. ● FUNC-219: Orders and tasks scheduling assessment. For a selected process/scope, the interface must present one or more recommended job"
+  },
+  {
+    "id": "FUNC-218",
+    "area": "ui_frontend",
+    "text": "● FUNC-218: The interface will allow the user to select multiple simulation scenarios, such as the real/current production scenario or disruptive scenarios simulated with the C-DT. ● FUNC-219: Orders and tasks scheduling assessment. For a selected process/scope, the interface must present one or more recommended job scheduling scenarios and the forecasted impact on relevant KPIs. Users must be able to approve/apply a recommended scenario or adjust it and re-evaluate the impact before applying."
+  },
+  {
+    "id": "FUNC-219",
+    "area": "ui_frontend",
+    "text": "● FUNC-219: Orders and tasks scheduling assessment. For a selected process/scope, the interface must present one or more recommended job scheduling scenarios and the forecasted impact on relevant KPIs. Users must be able to approve/apply a recommended scenario or adjust it and re-evaluate the impact before applying. FUNC-220: System Monitoring and Alerts ● FUNC-221: The UI header must feature a persistent status icon indicating overall system health (e.g., Green/Online, Yellow/Warning, Red/Critical)."
+  },
+  {
+    "id": "FUNC-220",
+    "area": "ui_frontend",
+    "text": "FUNC-220: System Monitoring and Alerts ● FUNC-221: The UI header must feature a persistent status icon indicating overall system health (e.g., Green/Online, Yellow/Warning, Red/Critical). ● FUNC-222: A non-intrusive toast notification (i.e., a small, temporary pop-up message that appears in a corner of the screen without blocking the user’s current task and auto-dismisses after a short time, optionally with a dismiss/action button) must appear when a critical alert is triggered. ● FUNC-223: An \"Alert Center\" page must exist, allowing users to view, filter (by"
+  },
+  {
+    "id": "FUNC-221",
+    "area": "ui_frontend",
+    "text": "● FUNC-221: The UI header must feature a persistent status icon indicating overall system health (e.g., Green/Online, Yellow/Warning, Red/Critical). ● FUNC-222: A non-intrusive toast notification (i.e., a small, temporary pop-up message that appears in a corner of the screen without blocking the user’s current task and auto-dismisses after a short time, optionally with a dismiss/action button) must appear when a critical alert is triggered. ● FUNC-223: An \"Alert Center\" page must exist, allowing users to view, filter (by severity, date, module), and \"acknowledge\" all active and historical alerts."
+  },
+  {
+    "id": "FUNC-222",
+    "area": "ui_frontend",
+    "text": "● FUNC-222: A non-intrusive toast notification (i.e., a small, temporary pop-up message that appears in a corner of the screen without blocking the user’s current task and auto-dismisses after a short time, optionally with a dismiss/action button) must appear when a critical alert is triggered. ● FUNC-223: An \"Alert Center\" page must exist, allowing users to view, filter (by severity, date, module), and \"acknowledge\" all active and historical alerts. FUNC-230: Cognitive Digital Twin (CDT) Feedback ● FUNC-231: The CDT module must provide a form interface for users to define"
+  },
+  {
+    "id": "FUNC-223",
+    "area": "ui_frontend",
+    "text": "● FUNC-223: An \"Alert Center\" page must exist, allowing users to view, filter (by severity, date, module), and \"acknowledge\" all active and historical alerts. FUNC-230: Cognitive Digital Twin (CDT) Feedback ● FUNC-231: The CDT module must provide a form interface for users to define \"What-if\" scenario parameters (e.g., \"If Machine X is offline...\"). ● FUNC-232: Simulation results must be presented with clear, side-by-side comparisons of \"Current State\" vs. \"Scenario Outcome\" using graphs (e.g., bar, line charts)."
+  },
+  {
+    "id": "FUNC-230",
+    "area": "ui_frontend",
+    "text": "FUNC-230: Cognitive Digital Twin (CDT) Feedback ● FUNC-231: The CDT module must provide a form interface for users to define \"What-if\" scenario parameters (e.g., \"If Machine X is offline...\"). ● FUNC-232: Simulation results must be presented with clear, side-by-side comparisons of \"Current State\" vs. \"Scenario Outcome\" using graphs (e.g., bar, line charts). ● FUNC-233: Simulation results must include a \"Summary Box\" that highlights the key impact (e.g., \"Cost: +15%,\" \"Production: -8%\")."
+  },
+  {
+    "id": "FUNC-231",
+    "area": "ui_frontend",
+    "text": "● FUNC-231: The CDT module must provide a form interface for users to define \"What-if\" scenario parameters (e.g., \"If Machine X is offline...\"). ● FUNC-232: Simulation results must be presented with clear, side-by-side comparisons of \"Current State\" vs. \"Scenario Outcome\" using graphs (e.g., bar, line charts). ● FUNC-233: Simulation results must include a \"Summary Box\" that highlights the key impact (e.g., \"Cost: +15%,\" \"Production: -8%\"). "
+  },
+  {
+    "id": "FUNC-232",
+    "area": "ui_frontend",
+    "text": "● FUNC-232: Simulation results must be presented with clear, side-by-side comparisons of \"Current State\" vs. \"Scenario Outcome\" using graphs (e.g., bar, line charts). ● FUNC-233: Simulation results must include a \"Summary Box\" that highlights the key impact (e.g., \"Cost: +15%,\" \"Production: -8%\"). -- 6 of 9 -- "
+  },
+  {
+    "id": "FUNC-233",
+    "area": "ui_frontend",
+    "text": "● FUNC-233: Simulation results must include a \"Summary Box\" that highlights the key impact (e.g., \"Cost: +15%,\" \"Production: -8%\"). -- 6 of 9 -- ● FUNC-234: Users must be able to save “What-if” simulations/scenarios, including their input parameters and resulting outputs, for later retrieval and reuse. ● FUNC-235: Saved simulations must be organized using a directory/folder"
+  },
+  {
+    "id": "FUNC-234",
+    "area": "ui_frontend",
+    "text": "● FUNC-234: Users must be able to save “What-if” simulations/scenarios, including their input parameters and resulting outputs, for later retrieval and reuse. ● FUNC-235: Saved simulations must be organized using a directory/folder structure and support custom user-defined tags for search and filtering. FUNC-240: Human-in-the-Loop (HITL) ● FUNC-241: A simple validation prompt (e.g., \"Confirm this data? Y/N,\" \"Is this an anomaly?\") must appear in the operator's UI when the system requires human input. The prompt must include an optional free-text field"
+  },
+  {
+    "id": "FUNC-235",
+    "area": "ui_frontend",
+    "text": "● FUNC-235: Saved simulations must be organized using a directory/folder structure and support custom user-defined tags for search and filtering. FUNC-240: Human-in-the-Loop (HITL) ● FUNC-241: A simple validation prompt (e.g., \"Confirm this data? Y/N,\" \"Is this an anomaly?\") must appear in the operator's UI when the system requires human input. The prompt must include an optional free-text field allowing the user to provide additional comments or explanations. ●"
+  },
+  {
+    "id": "FUNC-240",
+    "area": "ui_frontend",
+    "text": "FUNC-240: Human-in-the-Loop (HITL) ● FUNC-241: A simple validation prompt (e.g., \"Confirm this data? Y/N,\" \"Is this an anomaly?\") must appear in the operator's UI when the system requires human input. The prompt must include an optional free-text field allowing the user to provide additional comments or explanations. ● ● FUNC-242: HITL validation prompts must not block the user's primary workflow and must be collected in a dedicated \"Task List\" widget. HITL prompts may"
+  },
+  {
+    "id": "FUNC-241",
+    "area": "ui_frontend",
+    "text": "● FUNC-241: A simple validation prompt (e.g., \"Confirm this data? Y/N,\" \"Is this an anomaly?\") must appear in the operator's UI when the system requires human input. The prompt must include an optional free-text field allowing the user to provide additional comments or explanations. ● ● FUNC-242: HITL validation prompts must not block the user's primary workflow and must be collected in a dedicated \"Task List\" widget. HITL prompts may remain hidden or non-intrusive while awaiting user response."
+  },
+  {
+    "id": "FUNC-242",
+    "area": "ui_frontend",
+    "text": "● FUNC-242: HITL validation prompts must not block the user's primary workflow and must be collected in a dedicated \"Task List\" widget. HITL prompts may remain hidden or non-intrusive while awaiting user response. ● FUNC-243: The interface must allow authorized users to manually \"override\" or \"adjust\" the system's current optimization objectives (e.g., production speed). FUNC-250: Sustainability and Circularity Assessment (SCA) Module ● FUNC-251: The SCA module must display a summary \"Sustainability Scorecard\" that fuses LCSA, PLCA, and HCD results."
+  },
+  {
+    "id": "FUNC-243",
+    "area": "ui_frontend",
+    "text": "● FUNC-243: The interface must allow authorized users to manually \"override\" or \"adjust\" the system's current optimization objectives (e.g., production speed). FUNC-250: Sustainability and Circularity Assessment (SCA) Module ● FUNC-251: The SCA module must display a summary \"Sustainability Scorecard\" that fuses LCSA, PLCA, and HCD results. ● ● FUNC-252: The interface must be able to generate detailed \"Analysis Reports\" with an \"Export to PDF\" or \"Printable View\" option for stakeholders. For large or data-intensive reports, the PDF generation process must not block the"
+  },
+  {
+    "id": "FUNC-250",
+    "area": "ui_frontend",
+    "text": "FUNC-250: Sustainability and Circularity Assessment (SCA) Module ● FUNC-251: The SCA module must display a summary \"Sustainability Scorecard\" that fuses LCSA, PLCA, and HCD results. ● ● FUNC-252: The interface must be able to generate detailed \"Analysis Reports\" with an \"Export to PDF\" or \"Printable View\" option for stakeholders. For large or data-intensive reports, the PDF generation process must not block the user interface. ● FUNC-253: SCA data must be presented using stakeholder-friendly visuals like"
+  },
+  {
+    "id": "FUNC-251",
+    "area": "ui_frontend",
+    "text": "● FUNC-251: The SCA module must display a summary \"Sustainability Scorecard\" that fuses LCSA, PLCA, and HCD results. ● ● FUNC-252: The interface must be able to generate detailed \"Analysis Reports\" with an \"Export to PDF\" or \"Printable View\" option for stakeholders. For large or data-intensive reports, the PDF generation process must not block the user interface. ● FUNC-253: SCA data must be presented using stakeholder-friendly visuals like heatmaps, Sankey diagrams (for energy/material flow), or radar charts (for"
+  },
+  {
+    "id": "FUNC-252",
+    "area": "ui_frontend",
+    "text": "● ● FUNC-252: The interface must be able to generate detailed \"Analysis Reports\" with an \"Export to PDF\" or \"Printable View\" option for stakeholders. For large or data-intensive reports, the PDF generation process must not block the user interface. ● FUNC-253: SCA data must be presented using stakeholder-friendly visuals like heatmaps, Sankey diagrams (for energy/material flow), or radar charts (for multi-dimensional comparison). 3. Technical and Architectural Requirements (CODE: TECH)"
+  },
+  {
+    "id": "FUNC-253",
+    "area": "ui_frontend",
+    "text": "● FUNC-253: SCA data must be presented using stakeholder-friendly visuals like heatmaps, Sankey diagrams (for energy/material flow), or radar charts (for multi-dimensional comparison). 3. Technical and Architectural Requirements (CODE: TECH) TECH-300: Technology Stack and Responsiveness ● TECH-301: The UI must be developed using HTML5, CSS3, and a modern JavaScript framework (e.g., React, Vue, Angular). ● TECH-302: The interface must be fully responsive, adapting all components"
+  },
+  {
+    "id": "HCD-100",
+    "area": "ui_frontend",
+    "text": "HCD-100: Intuitiveness and Low Learning Curve ● HCD-101: An optional \"Onboarding Tour\" must be presented to first-time users to introduce main UI components (e.g., Dashboard, Alerts, Simulator). ● HCD-102: Complex workflows (e.g., setting targets in MO-DDSS, creating a CDT scenario) must be designed as a \"Step-by-Step Wizard\" format, broken into a maximum of 3-4 logical steps. ● HCD-103: A \"Progress Bar\" must be present in every wizard to show the user their current location in the process."
+  },
+  {
+    "id": "HCD-101",
+    "area": "ui_frontend",
+    "text": "● HCD-101: An optional \"Onboarding Tour\" must be presented to first-time users to introduce main UI components (e.g., Dashboard, Alerts, Simulator). ● HCD-102: Complex workflows (e.g., setting targets in MO-DDSS, creating a CDT scenario) must be designed as a \"Step-by-Step Wizard\" format, broken into a maximum of 3-4 logical steps. ● HCD-103: A \"Progress Bar\" must be present in every wizard to show the user their current location in the process. ● HCD-104: All interactive icons must display a \"Tooltip\" on hover, explaining their"
+  },
+  {
+    "id": "HCD-102",
+    "area": "ui_frontend",
+    "text": "● HCD-102: Complex workflows (e.g., setting targets in MO-DDSS, creating a CDT scenario) must be designed as a \"Step-by-Step Wizard\" format, broken into a maximum of 3-4 logical steps. ● HCD-103: A \"Progress Bar\" must be present in every wizard to show the user their current location in the process. ● HCD-104: All interactive icons must display a \"Tooltip\" on hover, explaining their function (e.g., \"Export as PDF,\" \"Run Simulation\"). "
+  },
+  {
+    "id": "HCD-103",
+    "area": "ui_frontend",
+    "text": "● HCD-103: A \"Progress Bar\" must be present in every wizard to show the user their current location in the process. ● HCD-104: All interactive icons must display a \"Tooltip\" on hover, explaining their function (e.g., \"Export as PDF,\" \"Run Simulation\"). -- 2 of 9 -- ● HCD-105: Terminology must be consistent across all modules. (e.g., If \"Scenario\""
+  },
+  {
+    "id": "HCD-104",
+    "area": "ui_frontend",
+    "text": "● HCD-104: All interactive icons must display a \"Tooltip\" on hover, explaining their function (e.g., \"Export as PDF,\" \"Run Simulation\"). -- 2 of 9 -- ● HCD-105: Terminology must be consistent across all modules. (e.g., If \"Scenario\" is used in one module, \"Hypothesis\" must not be used in another for the same function)."
+  },
+  {
+    "id": "HCD-105",
+    "area": "ui_frontend",
+    "text": "● HCD-105: Terminology must be consistent across all modules. (e.g., If \"Scenario\" is used in one module, \"Hypothesis\" must not be used in another for the same function). ● HCD-106: The platform must provide a centralized Terminology Dictionary that defines and standardizes all key UI and domain terms (e.g., Scenario, Alert, Optimization Target). ● HCD-107: The Terminology Dictionary must be accessible to all partners and UI designers and serve as the authoritative reference for terminology usage across"
+  },
+  {
+    "id": "HCD-106",
+    "area": "ui_frontend",
+    "text": "● HCD-106: The platform must provide a centralized Terminology Dictionary that defines and standardizes all key UI and domain terms (e.g., Scenario, Alert, Optimization Target). ● HCD-107: The Terminology Dictionary must be accessible to all partners and UI designers and serve as the authoritative reference for terminology usage across all modules. ● HCD-108: Any introduction of a new term or modification of an existing term must be reflected in the Terminology Dictionary and reviewed for consistency."
+  },
+  {
+    "id": "HCD-107",
+    "area": "ui_frontend",
+    "text": "● HCD-107: The Terminology Dictionary must be accessible to all partners and UI designers and serve as the authoritative reference for terminology usage across all modules. ● HCD-108: Any introduction of a new term or modification of an existing term must be reflected in the Terminology Dictionary and reviewed for consistency. HCD-110: User Diversity and Customization ● HCD-111: The platform must support at least 5 distinct user roles (e.g., Manager, Engineer, Operator, Admin, Developer) with different permission sets."
+  },
+  {
+    "id": "HCD-108",
+    "area": "ui_frontend",
+    "text": "● HCD-108: Any introduction of a new term or modification of an existing term must be reflected in the Terminology Dictionary and reviewed for consistency. HCD-110: User Diversity and Customization ● HCD-111: The platform must support at least 5 distinct user roles (e.g., Manager, Engineer, Operator, Admin, Developer) with different permission sets. ● HCD-112: The Admin role shall be responsible for application-level configuration, including default dashboards, role permissions, and KPI definitions. ● HCD-113: The Developer role shall have access to system-wide technical"
+  },
+  {
+    "id": "HCD-110",
+    "area": "backend_or_integration",
+    "text": "HCD-110: User Diversity and Customization ● HCD-111: The platform must support at least 5 distinct user roles (e.g., Manager, Engineer, Operator, Admin, Developer) with different permission sets. ● HCD-112: The Admin role shall be responsible for application-level configuration, including default dashboards, role permissions, and KPI definitions. ● HCD-113: The Developer role shall have access to system-wide technical settings, debugging, and integration-related configurations, and shall not be intended for standard operational use."
+  },
+  {
+    "id": "HCD-111",
+    "area": "backend_or_integration",
+    "text": "● HCD-111: The platform must support at least 5 distinct user roles (e.g., Manager, Engineer, Operator, Admin, Developer) with different permission sets. ● HCD-112: The Admin role shall be responsible for application-level configuration, including default dashboards, role permissions, and KPI definitions. ● HCD-113: The Developer role shall have access to system-wide technical settings, debugging, and integration-related configurations, and shall not be intended for standard operational use. ● HCD-114: Admins and Managers must be able to define fixed or predefined"
+  },
+  {
+    "id": "HCD-112",
+    "area": "backend_or_integration",
+    "text": "● HCD-112: The Admin role shall be responsible for application-level configuration, including default dashboards, role permissions, and KPI definitions. ● HCD-113: The Developer role shall have access to system-wide technical settings, debugging, and integration-related configurations, and shall not be intended for standard operational use. ● HCD-114: Admins and Managers must be able to define fixed or predefined dashboards that serve as default views for specific user roles. ● HCD-115: Users must be able to hide or show widgets on their main dashboard"
+  },
+  {
+    "id": "HCD-113",
+    "area": "backend_or_integration",
+    "text": "● HCD-113: The Developer role shall have access to system-wide technical settings, debugging, and integration-related configurations, and shall not be intended for standard operational use. ● HCD-114: Admins and Managers must be able to define fixed or predefined dashboards that serve as default views for specific user roles. ● HCD-115: Users must be able to hide or show widgets on their main dashboard to personalize their view. ● HCD-116: Dashboard widgets must be configurable with respect to:"
+  },
+  {
+    "id": "HCD-114",
+    "area": "ui_frontend",
+    "text": "● HCD-114: Admins and Managers must be able to define fixed or predefined dashboards that serve as default views for specific user roles. ● HCD-115: Users must be able to hide or show widgets on their main dashboard to personalize their view. ● HCD-116: Dashboard widgets must be configurable with respect to: – Data source / dataset – Selected fields or metrics – Applied filters and filter values"
+  },
+  {
+    "id": "HCD-115",
+    "area": "ui_frontend",
+    "text": "● HCD-115: Users must be able to hide or show widgets on their main dashboard to personalize their view. ● HCD-116: Dashboard widgets must be configurable with respect to: – Data source / dataset – Selected fields or metrics – Applied filters and filter values ● HCD-117: Widget configuration options must respect user role permissions and data access rights."
+  },
+  {
+    "id": "HCD-116",
+    "area": "ui_frontend",
+    "text": "● HCD-116: Dashboard widgets must be configurable with respect to: – Data source / dataset – Selected fields or metrics – Applied filters and filter values ● HCD-117: Widget configuration options must respect user role permissions and data access rights. ● HCD-118: A \"Lite Mode\" or \"Simple Mode\" option, featuring larger text and less information density, must be available for users with lower digital literacy."
+  },
+  {
+    "id": "HCD-117",
+    "area": "ui_frontend",
+    "text": "● HCD-117: Widget configuration options must respect user role permissions and data access rights. ● HCD-118: A \"Lite Mode\" or \"Simple Mode\" option, featuring larger text and less information density, must be available for users with lower digital literacy. HCD-120: Role-Specific Functionalities ● -- 3 of 9 --"
+  },
+  {
+    "id": "HCD-118",
+    "area": "ui_frontend",
+    "text": "● HCD-118: A \"Lite Mode\" or \"Simple Mode\" option, featuring larger text and less information density, must be available for users with lower digital literacy. HCD-120: Role-Specific Functionalities ● -- 3 of 9 -- ● HCD-121 (Manager Role): The dashboard must default to strategic KPIs, SCA"
+  },
+  {
+    "id": "HCD-120",
+    "area": "ui_frontend",
+    "text": "HCD-120: Role-Specific Functionalities ● -- 3 of 9 -- ● HCD-121 (Manager Role): The dashboard must default to strategic KPIs, SCA summary reports, and the progress of optimization targets. Managers must have the ability to access more detailed views and underlying data, equivalent to"
+  },
+  {
+    "id": "HCD-121",
+    "area": "ui_frontend",
+    "text": "● HCD-121 (Manager Role): The dashboard must default to strategic KPIs, SCA summary reports, and the progress of optimization targets. Managers must have the ability to access more detailed views and underlying data, equivalent to lower-level roles, when required. ● HCD-122 (Engineer Role ): The dashboard must default to detailed system health status, quick access to CDT simulations, and MO-DDSS parameter settings. ● HCD-123 (Operator Role): The interface must default to a simplified view"
+  },
+  {
+    "id": "HCD-122",
+    "area": "ui_frontend",
+    "text": "● HCD-122 (Engineer Role ): The dashboard must default to detailed system health status, quick access to CDT simulations, and MO-DDSS parameter settings. ● HCD-123 (Operator Role): The interface must default to a simplified view showing only real-time scoreboards, active alerts, and pending HITL validation tasks. ● HCD-12X (Superuser): Access to system-wide (for company) settings, user-role assignments, etc."
+  },
+  {
+    "id": "HCD-123",
+    "area": "ui_frontend",
+    "text": "● HCD-123 (Operator Role): The interface must default to a simplified view showing only real-time scoreboards, active alerts, and pending HITL validation tasks. ● HCD-12X (Superuser): Access to system-wide (for company) settings, user-role assignments, etc. HCD-130: Visual Clarity ● HCD-131: Information in data visualizations (charts, diagrams) must not be conveyed by color alone. Patterns, labels, or textures must also be used for"
+  },
+  {
+    "id": "HCD-130",
+    "area": "ui_frontend",
+    "text": "HCD-130: Visual Clarity ● HCD-131: Information in data visualizations (charts, diagrams) must not be conveyed by color alone. Patterns, labels, or textures must also be used for color-blind users. ● HCD-132: All charts must be interactive, showing precise values on hover for any data point. ● HCD-133: Sufficient \"white space\" (negative space) must be used to prevent a cluttered interface and improve focus."
+  },
+  {
+    "id": "HCD-131",
+    "area": "ui_frontend",
+    "text": "● HCD-131: Information in data visualizations (charts, diagrams) must not be conveyed by color alone. Patterns, labels, or textures must also be used for color-blind users. ● HCD-132: All charts must be interactive, showing precise values on hover for any data point. ● HCD-133: Sufficient \"white space\" (negative space) must be used to prevent a cluttered interface and improve focus. ● HCD-134: Visual appeal must be professional and functional, avoiding"
+  },
+  {
+    "id": "HCD-132",
+    "area": "ui_frontend",
+    "text": "● HCD-132: All charts must be interactive, showing precise values on hover for any data point. ● HCD-133: Sufficient \"white space\" (negative space) must be used to prevent a cluttered interface and improve focus. ● HCD-134: Visual appeal must be professional and functional, avoiding unnecessary animations or visuals that detract from core tasks. HCD-140: Efficiency ● HCD-141: Frequent actions (e.g., \"Start New Scenario,\" \"Export Report\") must"
+  },
+  {
+    "id": "HCD-133",
+    "area": "ui_frontend",
+    "text": "● HCD-133: Sufficient \"white space\" (negative space) must be used to prevent a cluttered interface and improve focus. ● HCD-134: Visual appeal must be professional and functional, avoiding unnecessary animations or visuals that detract from core tasks. HCD-140: Efficiency ● HCD-141: Frequent actions (e.g., \"Start New Scenario,\" \"Export Report\") must be accessible within two clicks from the main dashboard, potentially via a \"Quick Access\" menu."
+  },
+  {
+    "id": "HCD-134",
+    "area": "ui_frontend",
+    "text": "● HCD-134: Visual appeal must be professional and functional, avoiding unnecessary animations or visuals that detract from core tasks. HCD-140: Efficiency ● HCD-141: Frequent actions (e.g., \"Start New Scenario,\" \"Export Report\") must be accessible within two clicks from the main dashboard, potentially via a \"Quick Access\" menu. ● HCD-142: Forms must use “default values” and/or “remember previous input” where appropriate to automate repetitive data entry, and must provide a clear"
+  },
+  {
+    "id": "HCD-140",
+    "area": "ui_frontend",
+    "text": "HCD-140: Efficiency ● HCD-141: Frequent actions (e.g., \"Start New Scenario,\" \"Export Report\") must be accessible within two clicks from the main dashboard, potentially via a \"Quick Access\" menu. ● HCD-142: Forms must use “default values” and/or “remember previous input” where appropriate to automate repetitive data entry, and must provide a clear “Reset/Clear form” action that restores all fields to their initial default/empty state, allowing users to start data entry from scratch."
+  },
+  {
+    "id": "HCD-141",
+    "area": "ui_frontend",
+    "text": "● HCD-141: Frequent actions (e.g., \"Start New Scenario,\" \"Export Report\") must be accessible within two clicks from the main dashboard, potentially via a \"Quick Access\" menu. ● HCD-142: Forms must use “default values” and/or “remember previous input” where appropriate to automate repetitive data entry, and must provide a clear “Reset/Clear form” action that restores all fields to their initial default/empty state, allowing users to start data entry from scratch. ● HCD-143: The average number of clicks to complete a critical workflow (e.g.,"
+  },
+  {
+    "id": "HCD-142",
+    "area": "ui_frontend",
+    "text": "● HCD-142: Forms must use “default values” and/or “remember previous input” where appropriate to automate repetitive data entry, and must provide a clear “Reset/Clear form” action that restores all fields to their initial default/empty state, allowing users to start data entry from scratch. ● HCD-143: The average number of clicks to complete a critical workflow (e.g., approving an optimization target) must be minimized. HCD-14X: Allow users to have their own “Quick Access” / Bookmarks menu. "
+  },
+  {
+    "id": "HCD-143",
+    "area": "ui_frontend",
+    "text": "● HCD-143: The average number of clicks to complete a critical workflow (e.g., approving an optimization target) must be minimized. HCD-14X: Allow users to have their own “Quick Access” / Bookmarks menu. -- 4 of 9 -- 2. Functional and Interactive Requirements (CODE: FUNC) FUNC-200: Information Presentation (Scoreboard)"
+  },
+  {
+    "id": "TECH-300",
+    "area": "ui_frontend",
+    "text": "TECH-300: Technology Stack and Responsiveness ● TECH-301: The UI must be developed using HTML5, CSS3, and a modern JavaScript framework (e.g., React, Vue, Angular). ● TECH-302: The interface must be fully responsive, adapting all components (tables, charts, forms) to desktop, tablet, and mobile screens without loss of functionality. -- 7 of 9 --"
+  },
+  {
+    "id": "TECH-301",
+    "area": "ui_frontend",
+    "text": "● TECH-301: The UI must be developed using HTML5, CSS3, and a modern JavaScript framework (e.g., React, Vue, Angular). ● TECH-302: The interface must be fully responsive, adapting all components (tables, charts, forms) to desktop, tablet, and mobile screens without loss of functionality. -- 7 of 9 -- "
+  },
+  {
+    "id": "TECH-302",
+    "area": "ui_frontend",
+    "text": "● TECH-302: The interface must be fully responsive, adapting all components (tables, charts, forms) to desktop, tablet, and mobile screens without loss of functionality. -- 7 of 9 -- TECH-310: Modularity and Scalability ● TECH-311: Development must follow \"Atomic Design\" principles (e.g., Atoms:"
+  },
+  {
+    "id": "TECH-310",
+    "area": "ui_frontend",
+    "text": "TECH-310: Modularity and Scalability ● TECH-311: Development must follow \"Atomic Design\" principles (e.g., Atoms: Button, Molecules: Search Form, Organisms: Header) for reusability. ● TECH-312: All UI components (buttons, forms, color palette, typography) must be defined in a central \"Design System\" or \"Component Library\" to ensure platform-wide consistency. ● TECH-313: A new module (e.g., a \"Maintenance Module\") must be able to be added to the platform navigation and structure with minimal effort and without"
+  },
+  {
+    "id": "TECH-311",
+    "area": "ui_frontend",
+    "text": "● TECH-311: Development must follow \"Atomic Design\" principles (e.g., Atoms: Button, Molecules: Search Form, Organisms: Header) for reusability. ● TECH-312: All UI components (buttons, forms, color palette, typography) must be defined in a central \"Design System\" or \"Component Library\" to ensure platform-wide consistency. ● TECH-313: A new module (e.g., a \"Maintenance Module\") must be able to be added to the platform navigation and structure with minimal effort and without breaking the existing UI."
+  },
+  {
+    "id": "TECH-312",
+    "area": "backend_or_integration",
+    "text": "● TECH-312: All UI components (buttons, forms, color palette, typography) must be defined in a central \"Design System\" or \"Component Library\" to ensure platform-wide consistency. ● TECH-313: A new module (e.g., a \"Maintenance Module\") must be able to be added to the platform navigation and structure with minimal effort and without breaking the existing UI. TECH-320: Interoperability ● TECH-321: All data exchange with the backend (DKG, CDT, MO-DDSS) must be"
+  },
+  {
+    "id": "TECH-313",
+    "area": "backend_or_integration",
+    "text": "● TECH-313: A new module (e.g., a \"Maintenance Module\") must be able to be added to the platform navigation and structure with minimal effort and without breaking the existing UI. TECH-320: Interoperability ● TECH-321: All data exchange with the backend (DKG, CDT, MO-DDSS) must be done via standardized APIs (e.g., RESTful or GraphQL) using JSON. ● TECH-322: A clear \"loading\" state (e.g., skeleton screens or spinners) must be displayed to the user while data is being fetched (e.g., opening a large report)."
+  },
+  {
+    "id": "TECH-320",
+    "area": "backend_or_integration",
+    "text": "TECH-320: Interoperability ● TECH-321: All data exchange with the backend (DKG, CDT, MO-DDSS) must be done via standardized APIs (e.g., RESTful or GraphQL) using JSON. ● TECH-322: A clear \"loading\" state (e.g., skeleton screens or spinners) must be displayed to the user while data is being fetched (e.g., opening a large report). ● TECH-323: A user-friendly error message (e.g., \"Data could not be loaded. Please try again later.\") must be shown if an API call fails (e.g., 500 error) or no data is found (e.g., 404 error)."
+  },
+  {
+    "id": "TECH-321",
+    "area": "backend_or_integration",
+    "text": "● TECH-321: All data exchange with the backend (DKG, CDT, MO-DDSS) must be done via standardized APIs (e.g., RESTful or GraphQL) using JSON. ● TECH-322: A clear \"loading\" state (e.g., skeleton screens or spinners) must be displayed to the user while data is being fetched (e.g., opening a large report). ● TECH-323: A user-friendly error message (e.g., \"Data could not be loaded. Please try again later.\") must be shown if an API call fails (e.g., 500 error) or no data is found (e.g., 404 error). ● TECH-324:Error messages must provide clear guidance on next steps if the"
+  },
+  {
+    "id": "TECH-322",
+    "area": "backend_or_integration",
+    "text": "● TECH-322: A clear \"loading\" state (e.g., skeleton screens or spinners) must be displayed to the user while data is being fetched (e.g., opening a large report). ● TECH-323: A user-friendly error message (e.g., \"Data could not be loaded. Please try again later.\") must be shown if an API call fails (e.g., 500 error) or no data is found (e.g., 404 error). ● TECH-324:Error messages must provide clear guidance on next steps if the problem persists, including information on whom the user can contact for support."
+  },
+  {
+    "id": "TECH-323",
+    "area": "backend_or_integration",
+    "text": "● TECH-323: A user-friendly error message (e.g., \"Data could not be loaded. Please try again later.\") must be shown if an API call fails (e.g., 500 error) or no data is found (e.g., 404 error). ● TECH-324:Error messages must provide clear guidance on next steps if the problem persists, including information on whom the user can contact for support. ● TECH-325: The interface must provide access to a dedicated support or contact page that lists responsible users or support contacts per company"
+  },
+  {
+    "id": "TECH-324",
+    "area": "ui_frontend",
+    "text": "● TECH-324:Error messages must provide clear guidance on next steps if the problem persists, including information on whom the user can contact for support. ● TECH-325: The interface must provide access to a dedicated support or contact page that lists responsible users or support contacts per company and role. ● TECH-326: Support and contact information presented to the user must be role-aware and company-specific, ensuring that users are directed to the"
+  },
+  {
+    "id": "TECH-325",
+    "area": "ui_frontend",
+    "text": "● TECH-325: The interface must provide access to a dedicated support or contact page that lists responsible users or support contacts per company and role. ● TECH-326: Support and contact information presented to the user must be role-aware and company-specific, ensuring that users are directed to the appropriate point of contact. TECH-330: Validation and Maintenance ● TECH-331: The UI design must be subjected to usability testing with real"
+  },
+  {
+    "id": "TECH-326",
+    "area": "ui_frontend",
+    "text": "● TECH-326: Support and contact information presented to the user must be role-aware and company-specific, ensuring that users are directed to the appropriate point of contact. TECH-330: Validation and Maintenance ● TECH-331: The UI design must be subjected to usability testing with real end-users (e.g., JPB and KAM workers) using the demo scenarios (from T5.2). ● TECH-332: Feedback from testing must be applied to the design in an iterative cycle of refinement."
+  },
+  {
+    "id": "TECH-330",
+    "area": "ui_frontend",
+    "text": "TECH-330: Validation and Maintenance ● TECH-331: The UI design must be subjected to usability testing with real end-users (e.g., JPB and KAM workers) using the demo scenarios (from T5.2). ● TECH-332: Feedback from testing must be applied to the design in an iterative cycle of refinement. -- 8 of 9 -- "
+  },
+  {
+    "id": "TECH-331",
+    "area": "ui_frontend",
+    "text": "● TECH-331: The UI design must be subjected to usability testing with real end-users (e.g., JPB and KAM workers) using the demo scenarios (from T5.2). ● TECH-332: Feedback from testing must be applied to the design in an iterative cycle of refinement. -- 8 of 9 -- 4. Accessibility and Training Requirements (CODE: ACCESS)"
+  },
+  {
+    "id": "TECH-332",
+    "area": "ui_frontend",
+    "text": "● TECH-332: Feedback from testing must be applied to the design in an iterative cycle of refinement. -- 8 of 9 -- 4. Accessibility and Training Requirements (CODE: ACCESS) ACCESS-400: Accessibility and Universal Design ● ACCESS-401: The platform must comply with WCAG (Web Content Accessibility"
+  }
+]
