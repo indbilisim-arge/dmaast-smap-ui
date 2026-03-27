@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRole } from '../../contexts/RoleContext';
+import AdminVisible from '../../components/shared/AdminVisible';
 import {
   BarChart,
   Bar,
@@ -444,9 +445,6 @@ function WhatIfPanel() {
 
 export default function ManufacturingDT() {
   const { role } = useRole();
-  const isOperator = role === 'operator';
-  const isManager = role === 'manager';
-
   const manufacturingKpis = dashboardKpis.filter(kpi =>
     ['equipment-availability', 'production-throughput', 'oee', 'yield-rate'].includes(kpi.id)
   );
@@ -466,22 +464,17 @@ export default function ManufacturingDT() {
       </div>
 
       <div className="p-6 space-y-6" id="printable-content">
+        <AdminVisible id="manufacturing.kpis">
         <div className="grid grid-cols-4 gap-4">
           {manufacturingKpis.map((kpi) => (
             <KpiCard key={kpi.id} kpi={kpi} />
           ))}
         </div>
+        </AdminVisible>
 
-        {isOperator && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <p className="text-sm text-blue-800">
-              <span className="font-semibold">Operator View:</span> Showing real-time machine status and KPI overview. Use the alert center for active notifications.
-            </p>
-          </div>
-        )}
 
-        {!isOperator && (
         <div className="grid grid-cols-3 gap-6">
+          <AdminVisible id="manufacturing.oee-breakdown">
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">OEE Breakdown</h3>
             <div className="h-64 flex items-center justify-center">
@@ -500,7 +493,7 @@ export default function ManufacturingDT() {
                     cornerRadius={5}
                     background={{ fill: '#f5f5f5' }}
                   >
-                    <LabelList dataKey="value" position="end" fontSize={11} fill="#333" formatter={(v: number) => `${v}%`} />
+                    <LabelList dataKey="value" position="end" fontSize={11} fill="#333" formatter={(v: any) => `${v}%`} />
                   </RadialBar>
                   <Tooltip />
                   <Legend
@@ -517,7 +510,9 @@ export default function ManufacturingDT() {
               <span className="text-sm text-surface-500 ml-2">Overall OEE</span>
             </div>
           </div>
+          </AdminVisible>
 
+          <AdminVisible id="manufacturing.production-output">
           <div className="col-span-2 bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Production Output</h3>
             <div className="h-64">
@@ -536,9 +531,10 @@ export default function ManufacturingDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          </AdminVisible>
         </div>
-        )}
 
+        <AdminVisible id="manufacturing.machine-status">
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -576,10 +572,13 @@ export default function ManufacturingDT() {
             ))}
           </div>
         </div>
+        </AdminVisible>
 
-        {!isOperator && <WhatIfPanel />}
+        <AdminVisible id="manufacturing.what-if">
+        <WhatIfPanel />
+        </AdminVisible>
 
-        {!isOperator && !isManager && (
+        <AdminVisible id="manufacturing.cycle-time">
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Cycle Time Analysis</h3>
           <div className="h-64">
@@ -598,7 +597,7 @@ export default function ManufacturingDT() {
             </ResponsiveContainer>
           </div>
         </div>
-        )}
+        </AdminVisible>
       </div>
     </div>
   );

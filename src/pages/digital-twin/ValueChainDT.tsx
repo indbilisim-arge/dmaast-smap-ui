@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRole } from '../../contexts/RoleContext';
+import AdminVisible from '../../components/shared/AdminVisible';
 import {
   LineChart,
   Line,
@@ -63,8 +64,6 @@ function NodeCard({ node }: { node: DigitalTwinNode }) {
 export default function ValueChainDT() {
   const [selectedNode, setSelectedNode] = useState<DigitalTwinNode | null>(null);
   const { role } = useRole();
-  const isOperator = role === 'operator';
-
   const valueChainKpis = dashboardKpis.filter(kpi =>
     ['lead-time', 'delivery-accuracy', 'inventory-turnover', 'supplier-reliability'].includes(kpi.id)
   );
@@ -78,13 +77,15 @@ export default function ValueChainDT() {
       <FilterBar showRoleSelector={false} />
 
       <div className="p-6 space-y-6">
+        <AdminVisible id="valuechain.kpis">
         <div className="grid grid-cols-4 gap-4">
           {valueChainKpis.map((kpi) => (
             <KpiCard key={kpi.id} kpi={kpi} />
           ))}
         </div>
+        </AdminVisible>
 
-        {!isOperator && (
+        <AdminVisible id="valuechain.supply-chain-flow">
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Supply Chain Flow</h3>
           <div className="flex items-center justify-center gap-2 md:gap-4 lg:gap-8 py-8 overflow-x-auto">
@@ -103,10 +104,10 @@ export default function ValueChainDT() {
             ))}
           </div>
         </div>
-        )}
+        </AdminVisible>
 
-        <div className={`grid ${isOperator ? 'grid-cols-1' : 'grid-cols-3'} gap-6`}>
-          {!isOperator && (
+        <div className="grid grid-cols-3 gap-6">
+          <AdminVisible id="valuechain.lead-time-trend">
           <div className="col-span-2 bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Lead Time Trend</h3>
             <div className="h-64">
@@ -134,8 +135,9 @@ export default function ValueChainDT() {
               </ResponsiveContainer>
             </div>
           </div>
-          )}
+          </AdminVisible>
 
+          <AdminVisible id="valuechain.order-status">
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Order Status</h3>
             <div className="space-y-4">
@@ -169,8 +171,10 @@ export default function ValueChainDT() {
               </div>
             </div>
           </div>
+          </AdminVisible>
         </div>
 
+        <AdminVisible id="valuechain.network-nodes">
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center gap-2 mb-4">
             <h3 className="font-semibold text-surface-900">Network Nodes</h3>
@@ -187,6 +191,7 @@ export default function ValueChainDT() {
             ))}
           </div>
         </div>
+        </AdminVisible>
       </div>
     </div>
   );

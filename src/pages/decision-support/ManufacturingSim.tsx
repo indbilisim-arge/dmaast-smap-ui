@@ -138,8 +138,6 @@ const defaultScenarioParams: ScenarioParameter[] = [
 ];
 
 export default function ManufacturingSim() {
-  const { role } = useRole();
-  const isManager = role === 'manager';
   const [scenarioParams, setScenarioParams] = useState<ScenarioParameter[]>(defaultScenarioParams);
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulationResults, setSimulationResults] = useState<{
@@ -424,7 +422,7 @@ export default function ManufacturingSim() {
           </>
         )}
 
-        <div className={`grid ${isManager ? 'grid-cols-1' : 'grid-cols-2'} gap-6`}>
+        <div className="grid grid-cols-2 gap-6">
           <div className="bg-white rounded-xl shadow-card p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-surface-900">Production Output Simulation</h3>
@@ -450,7 +448,6 @@ export default function ManufacturingSim() {
             </div>
           </div>
 
-          {!isManager && (
             <div className="bg-white rounded-xl shadow-card p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-surface-900">Machine Utilization</h3>
@@ -473,11 +470,9 @@ export default function ManufacturingSim() {
                 </ResponsiveContainer>
               </div>
             </div>
-          )}
         </div>
 
-        {!isManager && (
-          <div className="bg-white rounded-xl shadow-card p-5">
+        <div className="bg-white rounded-xl shadow-card p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-surface-900">Bottleneck Analysis</h3>
               <ChartInfoPopover
@@ -517,7 +512,6 @@ export default function ManufacturingSim() {
               </div>
             </div>
           </div>
-        )}
       </div>
     </div>
   );

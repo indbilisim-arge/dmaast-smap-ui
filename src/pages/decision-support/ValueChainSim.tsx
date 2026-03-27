@@ -116,8 +116,7 @@ const scenarioTypes = [
 ];
 
 export default function ValueChainSim() {
-  const { role, hasPermission } = useRole();
-  const isManager = role === 'manager';
+  const { role } = useRole();
   const [scenarioParams, setScenarioParams] = useState<ScenarioParameter[]>(defaultScenarioParams);
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulationResults, setSimulationResults] = useState<{
@@ -378,13 +377,6 @@ export default function ValueChainSim() {
           />
         )}
 
-        {isManager && (
-          <div className="bg-primary-50 border border-primary-200 rounded-xl p-4">
-            <p className="text-sm text-primary-800">
-              <span className="font-semibold">Manager View:</span> Configure scenarios to evaluate cost, lead time, and sustainability trade-offs. Results include impact analysis and strategic recommendations.
-            </p>
-          </div>
-        )}
 
         {simulationResults && (
           <>

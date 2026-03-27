@@ -18,6 +18,7 @@ import {
 } from 'recharts';
 import { Leaf, Zap, Droplets, Wind, Recycle, TrendingDown, Factory, Award, Shield, Users } from 'lucide-react';
 import { useRole } from '../../contexts/RoleContext';
+import AdminVisible from '../../components/shared/AdminVisible';
 import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
 import FilterBar from '../../components/shared/FilterBar';
@@ -393,11 +394,6 @@ function EnvironmentalHeatmap() {
 }
 
 export default function SustainabilityDT() {
-  const { role } = useRole();
-  const isManager = role === 'manager';
-  const isEngineer = role === 'engineer';
-  const showDetailedCharts = role !== 'manager';
-
   return (
     <div className="min-h-screen">
       <Header
@@ -407,6 +403,7 @@ export default function SustainabilityDT() {
       <FilterBar showRoleSelector={false} />
 
       <div className="p-6 space-y-6">
+        <AdminVisible id="sustainability.scorecard">
         <div className="bg-white rounded-xl shadow-card p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-green-50 rounded-lg">
@@ -490,13 +487,17 @@ export default function SustainabilityDT() {
             </div>
           </div>
         </div>
+        </AdminVisible>
 
+        <AdminVisible id="sustainability.kpis">
         <div className="grid grid-cols-4 gap-4">
           {sustainabilityKpis.map((kpi) => (
             <KpiCard key={kpi.id} kpi={kpi} />
           ))}
         </div>
+        </AdminVisible>
 
+        <AdminVisible id="sustainability.metrics">
         <div className="grid grid-cols-4 gap-4">
           {sustainabilityMetrics.map((metric) => (
             <div key={metric.label} className="bg-white rounded-xl shadow-card p-4">
@@ -513,7 +514,9 @@ export default function SustainabilityDT() {
             </div>
           ))}
         </div>
+        </AdminVisible>
 
+        <AdminVisible id="sustainability.material-flow">
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-blue-50 rounded-lg">
@@ -528,8 +531,9 @@ export default function SustainabilityDT() {
             <SankeyFlowDiagram />
           </div>
         </div>
+        </AdminVisible>
 
-        {showDetailedCharts && (
+        <AdminVisible id="sustainability.heatmap">
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-amber-50 rounded-lg">
@@ -550,9 +554,9 @@ export default function SustainabilityDT() {
           </div>
           <EnvironmentalHeatmap />
         </div>
-        )}
+        </AdminVisible>
 
-        {showDetailedCharts && (
+        <AdminVisible id="sustainability.energy-consumption">
         <div className="grid grid-cols-1 gap-6">
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Energy Consumption by Line</h3>
@@ -572,9 +576,9 @@ export default function SustainabilityDT() {
             </div>
           </div>
         </div>
-        )}
+        </AdminVisible>
 
-        {showDetailedCharts && (
+        <AdminVisible id="sustainability.waste-management">
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Waste Management</h3>
           <div className="h-72">
@@ -595,8 +599,9 @@ export default function SustainabilityDT() {
             </ResponsiveContainer>
           </div>
         </div>
-        )}
+        </AdminVisible>
 
+        <AdminVisible id="sustainability.goals">
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-surface-900">Sustainability Goals Progress</h3>
@@ -624,14 +629,8 @@ export default function SustainabilityDT() {
             ))}
           </div>
         </div>
+        </AdminVisible>
 
-        {isManager && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-            <p className="text-sm text-green-800">
-              <span className="font-semibold">Strategic View:</span> Detailed environmental charts are available in the Engineer view. This view focuses on sustainability scorecard and goal progress.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import {
   LabelList,
 } from 'recharts';
 import { useRole } from '../../contexts/RoleContext';
+import AdminVisible from '../../components/shared/AdminVisible';
 import { Package, AlertTriangle, CheckCircle, Search, Layers, Info, X, FileText } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
@@ -149,8 +150,6 @@ const traceabilityData: TraceabilityItem[] = [
 export default function ProductDT() {
   const [selectedItem, setSelectedItem] = useState<TraceabilityItem | null>(null);
   const { role } = useRole();
-  const isOperator = role === 'operator';
-
   return (
     <div className="min-h-screen">
       <Header
@@ -160,14 +159,16 @@ export default function ProductDT() {
       <FilterBar showRoleSelector={false} />
 
       <div className="p-6 space-y-6">
+        <AdminVisible id="product.kpis">
         <div className="grid grid-cols-4 gap-4">
           {productKpis.map((kpi) => (
             <KpiCard key={kpi.id} kpi={kpi} />
           ))}
         </div>
+        </AdminVisible>
 
-        {!isOperator && (
         <div className="grid grid-cols-3 gap-6">
+          <AdminVisible id="product.quality-trend">
           <div className="col-span-2 bg-white rounded-xl shadow-card p-5 overflow-hidden">
             <h3 className="font-semibold text-surface-900 mb-4">Quality Trend by Batch</h3>
             <div className="h-72 overflow-hidden">
@@ -187,8 +188,9 @@ export default function ProductDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          </AdminVisible>
 
-          <div className="bg-white rounded-xl shadow-card p-5 overflow-hidden">
+          <AdminVisible id="product.defect-distribution">          <div className="bg-white rounded-xl shadow-card p-5 overflow-hidden">
             <h3 className="font-semibold text-surface-900 mb-4">Defect Distribution</h3>
             <div className="h-72 overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
@@ -204,9 +206,10 @@ export default function ProductDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          </AdminVisible>
         </div>
-        )}
 
+        <AdminVisible id="product.variants-performance">
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Product Variants Performance</h3>
           <div className="grid grid-cols-4 gap-4">
@@ -247,7 +250,9 @@ export default function ProductDT() {
             ))}
           </div>
         </div>
+        </AdminVisible>
 
+        <AdminVisible id="product.traceability">
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-surface-900">Component Traceability</h3>
@@ -320,6 +325,7 @@ export default function ProductDT() {
             </tbody>
           </table>
         </div>
+        </AdminVisible>
       </div>
 
       {selectedItem && selectedItem.failureDetails && (

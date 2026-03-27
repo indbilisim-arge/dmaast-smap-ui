@@ -3,6 +3,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { ToastProvider } from './contexts/ToastContext';
 import { RoleProvider } from './contexts/RoleContext';
 import { AccessibilityProvider } from './contexts/AccessibilityContext';
+import { ComponentVisibilityProvider } from './contexts/ComponentVisibilityContext';
 import Layout from './components/layout/Layout';
 import ProtectedRoute from './components/routing/ProtectedRoute';
 import Dashboard from './pages/Dashboard';
@@ -18,6 +19,7 @@ import SchedulingAssessment from './pages/decision-support/SchedulingAssessment'
 import AlertCenter from './pages/AlertCenter';
 import HelpCenter from './pages/HelpCenter';
 import TerminologyDictionary from './pages/TerminologyDictionary';
+import AdminPanel from './pages/AdminPanel';
 import OnboardingTour from './components/shared/OnboardingTour';
 import QuickAccess from './components/shared/QuickAccess';
 
@@ -27,6 +29,7 @@ export default function App() {
       <LanguageProvider>
         <ToastProvider>
           <RoleProvider>
+            <ComponentVisibilityProvider>
             <BrowserRouter>
               <OnboardingTour />
               <Routes>
@@ -57,6 +60,7 @@ export default function App() {
                   <Route path="alerts" element={<AlertCenter />} />
                   <Route path="terminology" element={<TerminologyDictionary />} />
                   <Route path="help" element={<HelpCenter />} />
+                  <Route path="admin" element={<ProtectedRoute permission="canManageRoles"><AdminPanel /></ProtectedRoute>} />
 
                   {/* Backward-compatibility redirects */}
                   <Route path="decision-support/value-chain-sim" element={<Navigate to="/digital-twin/value-chain-sim" replace />} />
@@ -66,6 +70,7 @@ export default function App() {
               </Routes>
               <QuickAccess />
             </BrowserRouter>
+            </ComponentVisibilityProvider>
           </RoleProvider>
         </ToastProvider>
       </LanguageProvider>

@@ -28,6 +28,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useRole, type UserRole } from '../contexts/RoleContext';
 import { useToast } from '../contexts/ToastContext';
 import { useAccessibility } from '../contexts/AccessibilityContext';
+import { useComponentVisibility } from '../contexts/ComponentVisibilityContext';
 
 const MUDA_COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#06b6d4'];
 const MUDA_PATTERN_IDS = ['muda-stripe', 'muda-dots', 'muda-crosshatch', 'muda-diagonal', 'muda-diamond', 'muda-horizontal', 'muda-zigzag'];
@@ -184,67 +185,24 @@ const defaultWidgets: DashboardWidget[] = [
   { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
 ];
 
+const WIDGET_LAYOUT = [
+  { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
+  { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
+  { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
+  { id: 'muda-analysis', title: 'MUDA Analysis', visible: true, order: 3, size: 'medium' },
+  { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
+  { id: 'alerts', title: 'Recent Alerts', visible: true, order: 5, size: 'medium' },
+  { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
+  { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
+] as DashboardWidget[];
+
 const roleDefaultWidgets: Record<UserRole, DashboardWidget[]> = {
-  manager: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: true, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: true, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-  ],
-  engineer: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: false, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: false, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-  ],
-  operator: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: true, order: 1, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 2, size: 'medium' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: false, order: 3, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: false, order: 4, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: false, order: 5, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: false, order: 6, size: 'large' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: false, order: 7, size: 'large' },
-  ],
-  admin: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: true, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: true, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-  ],
-  developer: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: false, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: false, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: false, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: false, order: 7, size: 'large' },
-  ],
-  superuser: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: true, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: true, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-  ],
+  manager: [...WIDGET_LAYOUT],
+  engineer: [...WIDGET_LAYOUT],
+  operator: [...WIDGET_LAYOUT],
+  admin: [...WIDGET_LAYOUT],
+  developer: [...WIDGET_LAYOUT],
+  superuser: [...WIDGET_LAYOUT],
 };
 
 function WidgetCustomizer({
@@ -391,6 +349,7 @@ export default function Dashboard() {
   const { role, config, hasPermission } = useRole();
   const { showToast } = useToast();
   const { settings: a11y } = useAccessibility();
+  const { isVisible: isAdminVisible } = useComponentVisibility();
   const location = useLocation();
   const navigate = useNavigate();
   const isLite = a11y.liteMode;
@@ -404,7 +363,7 @@ export default function Dashboard() {
     }
   }, [location.state, showToast, navigate]);
 
-  const [hitlTasks, setHitlTasks] = useState(hitlValidationTasks);
+  const [hitlTasks, setHitlTasks] = useState<any[]>(hitlValidationTasks);
   const handleHitlApprove = useCallback((id: string) => {
     setHitlTasks(prev => prev.map(t => t.id === id ? { ...t, status: 'approved' as const } : t));
     showToast('success', 'Task Approved', 'Validation task has been approved successfully.');
@@ -470,8 +429,19 @@ export default function Dashboard() {
     return roleDefaultWidgets[role] || defaultWidgets;
   };
 
+  const WIDGET_TO_ADMIN_ID: Record<string, string> = {
+    'quick-stats': 'dashboard.quick-stats',
+    'kpi-primary': 'dashboard.kpi-primary',
+    'production-trend': 'dashboard.production-trend',
+    'muda-analysis': 'dashboard.muda-analysis',
+    'waste-reduction': 'dashboard.waste-reduction',
+    'alerts': 'dashboard.alerts',
+    'hitl-tasks': 'dashboard.hitl-tasks',
+    'kpi-secondary': 'dashboard.kpi-secondary',
+  };
+
   const visibleWidgets = widgets
-    .filter(w => w.visible)
+    .filter(w => w.visible && isAdminVisible(WIDGET_TO_ADMIN_ID[w.id] || w.id, role))
     .sort((a, b) => a.order - b.order);
 
   const isWidgetVisible = (id: string) => visibleWidgets.some(w => w.id === id);
@@ -727,7 +697,7 @@ export default function Dashboard() {
                     paddingAngle={2}
                     dataKey="value"
                     nameKey="category"
-                    label={({ cx, cy, midAngle, outerRadius: oR, category, value }: { cx: number; cy: number; midAngle: number; outerRadius: number; category: string; value: number }) => {
+                    label={({ cx, cy, midAngle, outerRadius: oR, category, value }: any) => {
                       const RADIAN = Math.PI / 180;
                       const radius = oR + 18;
                       const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -746,7 +716,7 @@ export default function Dashboard() {
                       );
                     }}
                   >
-                    {mudaData.map((_, index) => (
+                    {mudaData.map((_entry, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={`url(#${MUDA_PATTERN_IDS[index % MUDA_PATTERN_IDS.length]})`}

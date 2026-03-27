@@ -21,6 +21,7 @@ import {
   BookOpen,
   CalendarClock,
   Accessibility,
+  ShieldCheck,
 } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { useRole } from '../../contexts/RoleContext';
@@ -213,6 +214,16 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
               to="/sustainability"
               icon={<Leaf className="w-5 h-5" />}
               label={t('nav.sustainability')}
+              onNavigate={handleNavigate}
+            />
+          )}
+
+          {/* Admin Panel - only for roles with canManageRoles */}
+          {hasPermission('canManageRoles') && (
+            <NavItem
+              to="/admin"
+              icon={<ShieldCheck className="w-5 h-5" />}
+              label="Admin Panel"
               onNavigate={handleNavigate}
             />
           )}

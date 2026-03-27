@@ -14,6 +14,7 @@ import {
   LabelList,
 } from 'recharts';
 import { useRole } from '../../contexts/RoleContext';
+import AdminVisible from '../../components/shared/AdminVisible';
 import { Truck, Package, Clock, MapPin, AlertCircle, CheckCircle, ArrowUpRight } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
@@ -99,8 +100,6 @@ const activeShipments = [
 
 export default function LogisticsDT() {
   const { role } = useRole();
-  const isOperator = role === 'operator';
-
   return (
     <div className="min-h-screen">
       <Header
@@ -110,12 +109,15 @@ export default function LogisticsDT() {
       <FilterBar showRoleSelector={false} />
 
       <div className="p-6 space-y-6">
+        <AdminVisible id="logistics.kpis">
         <div className="grid grid-cols-4 gap-4">
           {logisticsKpis.map((kpi) => (
             <KpiCard key={kpi.id} kpi={kpi} />
           ))}
         </div>
+        </AdminVisible>
 
+        <AdminVisible id="logistics.shipment-summary">
         <div className="grid grid-cols-4 gap-4">
           {shipmentData.map((item) => (
             <div key={item.status} className="bg-white rounded-xl shadow-card p-4">
@@ -128,9 +130,10 @@ export default function LogisticsDT() {
             </div>
           ))}
         </div>
+        </AdminVisible>
 
-        {!isOperator && (
         <div className="grid grid-cols-3 gap-6">
+          <AdminVisible id="logistics.volume-trend">
           <div className="col-span-2 bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Volume Trend</h3>
             <div className="h-72">
@@ -163,7 +166,9 @@ export default function LogisticsDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          </AdminVisible>
 
+          <AdminVisible id="logistics.route-performance">
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Route Performance</h3>
             <div className="h-72">
@@ -182,9 +187,10 @@ export default function LogisticsDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          </AdminVisible>
         </div>
-        )}
 
+        <AdminVisible id="logistics.active-shipments">
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -263,6 +269,7 @@ export default function LogisticsDT() {
             </table>
           </div>
         </div>
+        </AdminVisible>
       </div>
     </div>
   );
