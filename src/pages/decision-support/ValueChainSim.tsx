@@ -17,7 +17,9 @@ import Wizard from '../../components/shared/Wizard';
 import { ScenarioParameter } from '../../components/shared/ScenarioPanel';
 import ComparisonView, { ComparisonMetric } from '../../components/shared/ComparisonView';
 import ImpactSummary, { ImpactItem } from '../../components/shared/ImpactSummary';
-import { useRole } from '../../contexts/RoleContext';
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { usePageLayout } from '../../hooks/usePageLayout';
 const supplyChainSimData = [
   { day: 1, inventory: 15000, demand: 1200, fulfilled: 1200 },
   { day: 2, inventory: 13800, demand: 1350, fulfilled: 1350 },
@@ -116,8 +118,7 @@ const scenarioTypes = [
 ];
 
 export default function ValueChainSim() {
-  const { role, hasPermission } = useRole();
-  const isManager = role === 'manager';
+  const layout = usePageLayout('value-chain-sim');
   const [scenarioParams, setScenarioParams] = useState<ScenarioParameter[]>(defaultScenarioParams);
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulationResults, setSimulationResults] = useState<{
@@ -304,8 +305,10 @@ export default function ValueChainSim() {
         title="Value Chain Simulation"
         subtitle="Supply chain scenario modeling and what-if analysis"
       />
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)} />
 
       <div className="p-6 space-y-6">
+        {layout.isVisible('baseline-metrics') && (
         <div>
           <p className="text-xs font-medium text-surface-500 mb-2 uppercase tracking-wide">Current state (baseline from Digital Twin)</p>
           <div className="grid grid-cols-4 gap-4">
@@ -347,6 +350,7 @@ export default function ValueChainSim() {
           </div>
           </div>
         </div>
+        )}
 
         <div className="flex items-center justify-between">
           <div />
@@ -378,29 +382,26 @@ export default function ValueChainSim() {
           />
         )}
 
-        {isManager && (
-          <div className="bg-primary-50 border border-primary-200 rounded-xl p-4">
-            <p className="text-sm text-primary-800">
-              <span className="font-semibold">Manager View:</span> Configure scenarios to evaluate cost, lead time, and sustainability trade-offs. Results include impact analysis and strategic recommendations.
-            </p>
-          </div>
-        )}
-
         {simulationResults && (
           <>
             <p className="text-xs font-medium text-surface-500 uppercase tracking-wide">Simulation results — Current state vs. scenario outcome</p>
+            {layout.isVisible('impact-summary') && (
             <ImpactSummary
               impacts={simulationResults.impacts}
               scenarioName={simulationResults.scenarioName}
             />
+            )}
 
+            {layout.isVisible('comparison-view') && (
             <ComparisonView
               metrics={simulationResults.metrics}
               chartType="bar"
             />
+            )}
           </>
         )}
 
+        {layout.isVisible('inventory-demand') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-surface-900">Inventory & Demand Simulation</h3>
@@ -427,7 +428,18 @@ export default function ValueChainSim() {
             </ResponsiveContainer>
           </div>
         </div>
+        )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Value Chain Simulation"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
     </div>
   );
 }

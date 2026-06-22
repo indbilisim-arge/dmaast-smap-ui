@@ -16,7 +16,7 @@ import {
   Cell,
   LabelList,
 } from 'recharts';
-import { Activity, TrendingUp, AlertTriangle, Clock, GripVertical, Eye, EyeOff, Settings, X, Save, RotateCcw, Check } from 'lucide-react';
+import { Activity, TrendingUp, AlertTriangle, Clock, Settings, X, Check } from 'lucide-react';
 import Header from '../components/layout/Header';
 import FilterBar from '../components/shared/FilterBar';
 import KpiCard from '../components/shared/KpiCard';
@@ -25,9 +25,12 @@ import TooltipUI from '../components/shared/Tooltip';
 import { TaskListWidget } from '../components/shared/HITLValidation';
 import { dashboardKpis, recentAlerts, productionTrendData, mudaData, hitlValidationTasks } from '../data/mockData';
 import { useLanguage } from '../contexts/LanguageContext';
-import { useRole, type UserRole } from '../contexts/RoleContext';
+import { useRole } from '../contexts/RoleContext';
 import { useToast } from '../contexts/ToastContext';
 import { useAccessibility } from '../contexts/AccessibilityContext';
+import PageCustomizer from '../components/shared/PageCustomizer';
+import PageToolbar from '../components/shared/PageToolbar';
+import { usePageLayout } from '../hooks/usePageLayout';
 
 const MUDA_COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#06b6d4'];
 const MUDA_PATTERN_IDS = ['muda-stripe', 'muda-dots', 'muda-crosshatch', 'muda-diagonal', 'muda-diamond', 'muda-horizontal', 'muda-zigzag'];
@@ -165,230 +168,25 @@ function WidgetConfigPanel({
   );
 }
 
-interface DashboardWidget {
-  id: string;
-  title: string;
-  visible: boolean;
-  order: number;
-  size: 'small' | 'medium' | 'large';
-}
-
-const defaultWidgets: DashboardWidget[] = [
-  { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-  { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-  { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-  { id: 'muda-analysis', title: 'MUDA Analysis', visible: true, order: 3, size: 'medium' },
-  { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-  { id: 'alerts', title: 'Recent Alerts', visible: true, order: 5, size: 'medium' },
-  { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-  { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-];
-
-const roleDefaultWidgets: Record<UserRole, DashboardWidget[]> = {
-  manager: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: true, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: true, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-  ],
-  engineer: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: false, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: false, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-  ],
-  operator: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: true, order: 1, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 2, size: 'medium' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: false, order: 3, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: false, order: 4, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: false, order: 5, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: false, order: 6, size: 'large' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: false, order: 7, size: 'large' },
-  ],
-  admin: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: true, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: true, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-  ],
-  developer: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: false, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: false, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: false, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: false, order: 7, size: 'large' },
-  ],
-  superuser: [
-    { id: 'quick-stats', title: 'Quick Stats', visible: true, order: 0, size: 'large' },
-    { id: 'kpi-primary', title: 'Primary KPIs', visible: true, order: 1, size: 'large' },
-    { id: 'production-trend', title: 'Production Trend', visible: true, order: 2, size: 'large' },
-    { id: 'muda-analysis', title: 'MUDA Analysis', visible: true, order: 3, size: 'medium' },
-    { id: 'waste-reduction', title: 'Waste Reduction', visible: true, order: 4, size: 'large' },
-    { id: 'alerts', title: 'Recent Alerts', visible: true, order: 5, size: 'medium' },
-    { id: 'hitl-tasks', title: 'Validation Tasks', visible: true, order: 6, size: 'medium' },
-    { id: 'kpi-secondary', title: 'Secondary KPIs', visible: true, order: 7, size: 'large' },
-  ],
+const WIDGET_SIZES: Record<string, 'small' | 'medium' | 'large'> = {
+  'quick-stats': 'large',
+  'kpi-primary': 'large',
+  'production-trend': 'large',
+  'muda-analysis': 'medium',
+  'waste-reduction': 'large',
+  'alerts': 'medium',
+  'hitl-tasks': 'medium',
+  'kpi-secondary': 'large',
 };
 
-function WidgetCustomizer({
-  widgets,
-  onSave,
-  onClose,
-  onResetToRoleDefault,
-}: {
-  widgets: DashboardWidget[];
-  onSave: (widgets: DashboardWidget[]) => void;
-  onClose: () => void;
-  onResetToRoleDefault: () => DashboardWidget[];
-}) {
-  const [localWidgets, setLocalWidgets] = useState(widgets);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-
-  const handleToggleVisibility = (id: string) => {
-    setLocalWidgets(prev =>
-      prev.map(w => (w.id === id ? { ...w, visible: !w.visible } : w))
-    );
-  };
-
-  const handleDragStart = (index: number) => {
-    setDraggedIndex(index);
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === index) return;
-
-    const newWidgets = [...localWidgets];
-    const [draggedWidget] = newWidgets.splice(draggedIndex, 1);
-    newWidgets.splice(index, 0, draggedWidget);
-    const reordered = newWidgets.map((w, i) => ({ ...w, order: i }));
-    setLocalWidgets(reordered);
-    setDraggedIndex(index);
-  };
-
-  const handleDragEnd = () => {
-    setDraggedIndex(null);
-  };
-
-  const handleSave = () => {
-    onSave(localWidgets);
-    onClose();
-  };
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-surface-900/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 max-h-[80vh] flex flex-col">
-        <div className="flex items-center justify-between p-4 border-b border-surface-200">
-          <h2 className="text-lg font-semibold text-surface-900">Customize Dashboard</h2>
-          <TooltipUI content="Close customization panel">
-            <button
-              onClick={onClose}
-              className="p-2 text-surface-400 hover:text-surface-600 rounded-lg transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </TooltipUI>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4">
-          <p className="text-sm text-surface-600 mb-4">
-            Drag to reorder widgets. Toggle visibility using the eye icon.
-          </p>
-
-          <div className="space-y-2">
-            {localWidgets.map((widget, index) => (
-              <div
-                key={widget.id}
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDragEnd={handleDragEnd}
-                className={`flex items-center gap-3 p-3 bg-surface-50 rounded-lg border border-surface-200 cursor-move ${
-                  draggedIndex === index ? 'opacity-50' : ''
-                } ${!widget.visible ? 'opacity-60' : ''}`}
-              >
-                <TooltipUI content="Drag to reorder">
-                  <GripVertical className="w-4 h-4 text-surface-400" />
-                </TooltipUI>
-                <span className="flex-1 text-sm font-medium text-surface-900">
-                  {widget.title}
-                </span>
-                <TooltipUI content={widget.visible ? 'Hide widget' : 'Show widget'}>
-                  <button
-                    onClick={() => handleToggleVisibility(widget.id)}
-                    className={`p-1.5 rounded transition-colors ${
-                      widget.visible
-                        ? 'text-primary-600 hover:bg-primary-50'
-                        : 'text-surface-400 hover:bg-surface-200'
-                    }`}
-                  >
-                    {widget.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                  </button>
-                </TooltipUI>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between p-4 border-t border-surface-200">
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLocalWidgets(defaultWidgets)}
-              className="px-4 py-2 text-sm text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-            >
-              Reset
-            </button>
-            <button
-              onClick={() => setLocalWidgets(onResetToRoleDefault())}
-              className="flex items-center gap-1.5 px-4 py-2 text-sm text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reset to Role Default
-            </button>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 text-sm text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-            <TooltipUI content="Save widget layout">
-              <button
-                onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2 text-sm bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-              >
-                <Save className="w-4 h-4" />
-                Save Layout
-              </button>
-            </TooltipUI>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+interface DashboardWidget {
+  id: string;
+  size: 'small' | 'medium' | 'large';
 }
 
 export default function Dashboard() {
   const { t } = useLanguage();
-  const { role, config, hasPermission } = useRole();
+  const { config, hasPermission } = useRole();
   const { showToast } = useToast();
   const { settings: a11y } = useAccessibility();
   const location = useLocation();
@@ -425,17 +223,8 @@ export default function Dashboard() {
     }
   }, []);
 
-  const [widgets, setWidgets] = useState<DashboardWidget[]>(() => {
-    return roleDefaultWidgets[role] || defaultWidgets;
-  });
-  const [showCustomizer, setShowCustomizer] = useState(false);
+  const layout = usePageLayout('dashboard');
   const [activeConfigPanel, setActiveConfigPanel] = useState<string | null>(null);
-
-  useEffect(() => {
-    const roleWidgets = roleDefaultWidgets[role] || defaultWidgets;
-    setWidgets(roleWidgets);
-    localStorage.setItem('smap-dashboard-widgets', JSON.stringify(roleWidgets));
-  }, [role]);
 
   const [widgetConfigs, setWidgetConfigs] = useState<WidgetConfigs>(() => {
     const saved = localStorage.getItem('smap-widget-configs');
@@ -461,20 +250,12 @@ export default function Dashboard() {
     });
   }, []);
 
-  const handleSaveWidgets = (newWidgets: DashboardWidget[]) => {
-    setWidgets(newWidgets);
-    localStorage.setItem('smap-dashboard-widgets', JSON.stringify(newWidgets));
-  };
+  const visibleWidgets: DashboardWidget[] = layout.visibleWidgetItems.map((item) => ({
+    id: item.id,
+    size: WIDGET_SIZES[item.id] || 'medium',
+  }));
 
-  const handleResetToRoleDefault = (): DashboardWidget[] => {
-    return roleDefaultWidgets[role] || defaultWidgets;
-  };
-
-  const visibleWidgets = widgets
-    .filter(w => w.visible)
-    .sort((a, b) => a.order - b.order);
-
-  const isWidgetVisible = (id: string) => visibleWidgets.some(w => w.id === id);
+  const isWidgetVisible = (id: string) => layout.isVisible(id);
 
   const quickStats = [
     { label: t('dashboard.alerts'), value: criticalAlerts.length, icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
@@ -1014,20 +795,9 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen">
       <Header title={t('dashboard.title')} subtitle={t('dashboard.subtitle')} />
-      <div className="flex items-center justify-between bg-white border-b border-surface-200">
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)}>
         <FilterBar showRoleSelector={false} />
-        <div className="pr-4">
-          <TooltipUI content="Customize dashboard widgets">
-            <button
-              onClick={() => setShowCustomizer(true)}
-              className="flex items-center gap-2 px-3 py-2 text-sm text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Customize</span>
-            </button>
-          </TooltipUI>
-        </div>
-      </div>
+      </PageToolbar>
 
       <div className="mx-4 lg:mx-6 mt-4 px-4 py-3 bg-primary-50 border border-primary-200 rounded-lg flex items-center justify-between">
         <p className="text-sm text-primary-800">
@@ -1041,12 +811,13 @@ export default function Dashboard() {
         {renderDynamicWidgets()}
       </div>
 
-      {showCustomizer && (
-        <WidgetCustomizer
-          widgets={widgets}
-          onSave={handleSaveWidgets}
-          onClose={() => setShowCustomizer(false)}
-          onResetToRoleDefault={handleResetToRoleDefault}
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle={t('dashboard.title')}
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
         />
       )}
     </div>

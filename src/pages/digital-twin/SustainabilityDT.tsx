@@ -17,56 +17,13 @@ import {
   LabelList,
 } from 'recharts';
 import { Leaf, Zap, Droplets, Wind, Recycle, TrendingDown, Factory, Award, Shield, Users } from 'lucide-react';
-import { useRole } from '../../contexts/RoleContext';
-import Header from '../../components/layout/Header';
-import HelpPopover from '../../components/shared/HelpPopover';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { getVisibleKpis } from '../../data/pageLayouts';
+import { usePageLayout } from '../../hooks/usePageLayout';
 import { energyConsumptionData } from '../../data/mockData';
-import type { KpiData } from '../../types';
-
-const sustainabilityKpis: KpiData[] = [
-  {
-    id: 'energy-per-unit',
-    label: 'Energy per Unit',
-    value: 2.4,
-    unit: 'kWh/unit',
-    trend: -8.5,
-    target: 2.0,
-    cluster: 'energy',
-    sparklineData: [3.0, 2.9, 2.8, 2.7, 2.6, 2.5, 2.4, 2.4],
-  },
-  {
-    id: 'carbon-footprint',
-    label: 'Carbon Footprint',
-    value: 145,
-    unit: 'kg CO2/unit',
-    trend: -12.3,
-    target: 120,
-    cluster: 'energy',
-    sparklineData: [180, 175, 168, 162, 155, 150, 148, 145],
-  },
-  {
-    id: 'water-consumption',
-    label: 'Water Consumption',
-    value: 18.5,
-    unit: 'L/unit',
-    trend: -5.2,
-    target: 15,
-    cluster: 'energy',
-    sparklineData: [22, 21, 20, 19.5, 19, 18.8, 18.6, 18.5],
-  },
-  {
-    id: 'recycling-rate',
-    label: 'Recycling Rate',
-    value: 78.4,
-    unit: '%',
-    trend: 4.8,
-    target: 85,
-    cluster: 'energy',
-    sparklineData: [68, 70, 72, 74, 75, 76, 77, 78.4],
-  },
-];
 
 const wasteBreakdownData = [
   { type: 'Metal Scrap', amount: 2450, recycled: 2350 },
@@ -393,10 +350,8 @@ function EnvironmentalHeatmap() {
 }
 
 export default function SustainabilityDT() {
-  const { role } = useRole();
-  const isManager = role === 'manager';
-  const isEngineer = role === 'engineer';
-  const showDetailedCharts = role !== 'manager';
+  const layout = usePageLayout('sustainability');
+  const visibleKpis = getVisibleKpis(layout.items);
 
   return (
     <div className="min-h-screen">
@@ -404,9 +359,12 @@ export default function SustainabilityDT() {
         title="Sustainability Digital Twin"
         subtitle="Environmental impact monitoring and optimization"
       />
-      <FilterBar showRoleSelector={false} />
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)}>
+        <FilterBar showRoleSelector={false} />
+      </PageToolbar>
 
       <div className="p-6 space-y-6">
+        {layout.isVisible('sustainability-scorecard') && (
         <div className="bg-white rounded-xl shadow-card p-6">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-green-50 rounded-lg">
@@ -490,13 +448,21 @@ export default function SustainabilityDT() {
             </div>
           </div>
         </div>
+        )}
 
-        <div className="grid grid-cols-4 gap-4">
-          {sustainabilityKpis.map((kpi) => (
-            <KpiCard key={kpi.id} kpi={kpi} />
-          ))}
-        </div>
+        {visibleKpis.length > 0 && (
+          <div className={`grid gap-4 ${
+            visibleKpis.length >= 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+            visibleKpis.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+            visibleKpis.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
+          }`}>
+            {visibleKpis.map((kpi) => (
+              <KpiCard key={kpi.id} kpi={kpi} />
+            ))}
+          </div>
+        )}
 
+        {layout.isVisible('sustainability-metrics') && (
         <div className="grid grid-cols-4 gap-4">
           {sustainabilityMetrics.map((metric) => (
             <div key={metric.label} className="bg-white rounded-xl shadow-card p-4">
@@ -513,7 +479,9 @@ export default function SustainabilityDT() {
             </div>
           ))}
         </div>
+        )}
 
+        {layout.isVisible('material-energy-flow') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-blue-50 rounded-lg">
@@ -528,8 +496,9 @@ export default function SustainabilityDT() {
             <SankeyFlowDiagram />
           </div>
         </div>
+        )}
 
-        {showDetailedCharts && (
+        {layout.isVisible('environmental-heatmap') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 bg-amber-50 rounded-lg">
@@ -552,7 +521,7 @@ export default function SustainabilityDT() {
         </div>
         )}
 
-        {showDetailedCharts && (
+        {layout.isVisible('energy-consumption') && (
         <div className="grid grid-cols-1 gap-6">
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Energy Consumption by Line</h3>
@@ -574,7 +543,7 @@ export default function SustainabilityDT() {
         </div>
         )}
 
-        {showDetailedCharts && (
+        {layout.isVisible('waste-breakdown') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Waste Management</h3>
           <div className="h-72">
@@ -597,6 +566,7 @@ export default function SustainabilityDT() {
         </div>
         )}
 
+        {layout.isVisible('sustainability-goals') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-surface-900">Sustainability Goals Progress</h3>
@@ -624,15 +594,18 @@ export default function SustainabilityDT() {
             ))}
           </div>
         </div>
-
-        {isManager && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-            <p className="text-sm text-green-800">
-              <span className="font-semibold">Strategic View:</span> Detailed environmental charts are available in the Engineer view. This view focuses on sustainability scorecard and goal progress.
-            </p>
-          </div>
         )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Sustainability Digital Twin"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
     </div>
   );
 }

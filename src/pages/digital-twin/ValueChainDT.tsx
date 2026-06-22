@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRole } from '../../contexts/RoleContext';
 import {
   LineChart,
   Line,
@@ -16,7 +15,11 @@ import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
-import { valueChainNodes, dashboardKpis } from '../../data/mockData';
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { getVisibleKpis } from '../../data/pageLayouts';
+import { usePageLayout } from '../../hooks/usePageLayout';
+import { valueChainNodes } from '../../data/mockData';
 import type { DigitalTwinNode } from '../../types';
 
 const flowData = [
@@ -62,12 +65,10 @@ function NodeCard({ node }: { node: DigitalTwinNode }) {
 
 export default function ValueChainDT() {
   const [selectedNode, setSelectedNode] = useState<DigitalTwinNode | null>(null);
-  const { role } = useRole();
-  const isOperator = role === 'operator';
-
-  const valueChainKpis = dashboardKpis.filter(kpi =>
-    ['lead-time', 'delivery-accuracy', 'inventory-turnover', 'supplier-reliability'].includes(kpi.id)
-  );
+  const layout = usePageLayout('value-chain');
+  const visibleKpis = getVisibleKpis(layout.items);
+  const showLeadTimeTrend = layout.isVisible('lead-time-trend');
+  const showSupplyChainFlow = layout.isVisible('supply-chain-flow');
 
   return (
     <div className="min-h-screen">
@@ -75,16 +76,24 @@ export default function ValueChainDT() {
         title="Value Chain Digital Twin"
         subtitle="End-to-end visibility across the supply network"
       />
-      <FilterBar showRoleSelector={false} />
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)}>
+        <FilterBar showRoleSelector={false} />
+      </PageToolbar>
 
       <div className="p-6 space-y-6">
-        <div className="grid grid-cols-4 gap-4">
-          {valueChainKpis.map((kpi) => (
-            <KpiCard key={kpi.id} kpi={kpi} />
-          ))}
-        </div>
+        {visibleKpis.length > 0 && (
+          <div className={`grid gap-4 ${
+            visibleKpis.length >= 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+            visibleKpis.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+            visibleKpis.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
+          }`}>
+            {visibleKpis.map((kpi) => (
+              <KpiCard key={kpi.id} kpi={kpi} />
+            ))}
+          </div>
+        )}
 
-        {!isOperator && (
+        {showSupplyChainFlow && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Supply Chain Flow</h3>
           <div className="flex items-center justify-center gap-2 md:gap-4 lg:gap-8 py-8 overflow-x-auto">
@@ -105,8 +114,8 @@ export default function ValueChainDT() {
         </div>
         )}
 
-        <div className={`grid ${isOperator ? 'grid-cols-1' : 'grid-cols-3'} gap-6`}>
-          {!isOperator && (
+        <div className={`grid ${showLeadTimeTrend ? 'grid-cols-3' : 'grid-cols-1'} gap-6`}>
+          {showLeadTimeTrend && (
           <div className="col-span-2 bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Lead Time Trend</h3>
             <div className="h-64">
@@ -136,6 +145,7 @@ export default function ValueChainDT() {
           </div>
           )}
 
+          {layout.isVisible('order-status') && (
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Order Status</h3>
             <div className="space-y-4">
@@ -169,8 +179,10 @@ export default function ValueChainDT() {
               </div>
             </div>
           </div>
+          )}
         </div>
 
+        {layout.isVisible('network-nodes') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center gap-2 mb-4">
             <h3 className="font-semibold text-surface-900">Network Nodes</h3>
@@ -187,7 +199,18 @@ export default function ValueChainDT() {
             ))}
           </div>
         </div>
+        )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Value Chain Digital Twin"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
     </div>
   );
 }

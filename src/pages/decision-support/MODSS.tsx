@@ -36,6 +36,9 @@ import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
 import Wizard from '../../components/shared/Wizard';
 import TooltipUI from '../../components/shared/Tooltip';
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { usePageLayout } from '../../hooks/usePageLayout';
 import { paretoFrontData } from '../../data/mockData';
 import { useRole } from '../../contexts/RoleContext';
 
@@ -190,6 +193,7 @@ function matchesManagerDefault(objective: string, weight: number): boolean {
 
 export default function MODSS() {
   const { role, hasPermission } = useRole();
+  const layout = usePageLayout('mo-dss');
 
   const getInitialWeights = () => {
     const roleKey = role as string;
@@ -449,6 +453,7 @@ export default function MODSS() {
         title="Multi-Objective Decision Support"
         subtitle="Pareto optimization and trade-off analysis"
       />
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)} />
 
       <div className="p-6 space-y-6">
         {showTargetWizard && (
@@ -464,6 +469,7 @@ export default function MODSS() {
           />
         )}
 
+        {layout.isVisible('objective-weights') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
@@ -517,8 +523,11 @@ export default function MODSS() {
             </div>
           )}
         </div>
+        )}
 
-        <div className="grid grid-cols-2 gap-6">
+        {(layout.isVisible('pareto-front') || layout.isVisible('solution-comparison')) && (
+        <div className={`grid ${layout.isVisible('pareto-front') && layout.isVisible('solution-comparison') ? 'grid-cols-2' : 'grid-cols-1'} gap-6`}>
+          {layout.isVisible('pareto-front') && (
           <div className="bg-white rounded-xl shadow-card p-5">
             <div className="flex items-center gap-2 mb-4">
               <h3 className="font-semibold text-surface-900">Pareto Front Visualization</h3>
@@ -592,7 +601,9 @@ export default function MODSS() {
               </div>
             </div>
           </div>
+          )}
 
+          {layout.isVisible('solution-comparison') && (
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Solution Comparison</h3>
             <div className="h-80">
@@ -608,8 +619,11 @@ export default function MODSS() {
               </ResponsiveContainer>
             </div>
           </div>
+          )}
         </div>
+        )}
 
+        {layout.isVisible('strategy-ranking') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Award className="w-5 h-5 text-primary-600" />
@@ -681,7 +695,9 @@ export default function MODSS() {
             ))}
           </div>
         </div>
+        )}
 
+        {layout.isVisible('ai-recommendations') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-surface-900">AI Recommendations</h3>
@@ -825,6 +841,7 @@ export default function MODSS() {
             ))}
           </div>
         </div>
+        )}
 
         {canOverride && (
           <div className="bg-white rounded-xl shadow-card p-5">
@@ -895,6 +912,16 @@ export default function MODSS() {
           </div>
         )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Multi-Objective Decision Support"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
 
       {detailsOpen && detailRec && (
         <div className="fixed inset-0 z-50 flex items-center justify-end">
