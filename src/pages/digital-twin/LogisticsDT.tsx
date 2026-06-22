@@ -13,56 +13,15 @@ import {
   Area,
   LabelList,
 } from 'recharts';
-import { useRole } from '../../contexts/RoleContext';
 import { Truck, Package, Clock, MapPin, AlertCircle, CheckCircle, ArrowUpRight } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
-import type { KpiData } from '../../types';
-
-const logisticsKpis: KpiData[] = [
-  {
-    id: 'delivery-accuracy',
-    label: 'Delivery Accuracy',
-    value: 96.8,
-    unit: '%',
-    trend: 1.5,
-    target: 98,
-    cluster: 'delivery',
-    sparklineData: [93, 94, 94.5, 95, 95.5, 96, 96.5, 96.8],
-  },
-  {
-    id: 'avg-transit-time',
-    label: 'Avg Transit Time',
-    value: 2.3,
-    unit: 'days',
-    trend: -0.4,
-    target: 2.0,
-    cluster: 'delivery',
-    sparklineData: [3.0, 2.8, 2.7, 2.6, 2.5, 2.4, 2.3, 2.3],
-  },
-  {
-    id: 'fleet-utilization',
-    label: 'Fleet Utilization',
-    value: 87.2,
-    unit: '%',
-    trend: 3.1,
-    target: 90,
-    cluster: 'cost',
-    sparklineData: [80, 82, 83, 84, 85, 86, 87, 87.2],
-  },
-  {
-    id: 'transport-cost',
-    label: 'Transport Cost',
-    value: 12.4,
-    unit: '€/unit',
-    trend: -2.1,
-    target: 10,
-    cluster: 'cost',
-    sparklineData: [15, 14.5, 14, 13.5, 13, 12.8, 12.5, 12.4],
-  },
-];
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { getVisibleKpis } from '../../data/pageLayouts';
+import { usePageLayout } from '../../hooks/usePageLayout';
 
 const shipmentData = [
   { status: 'In Transit', count: 234, color: 'bg-blue-500' },
@@ -98,8 +57,10 @@ const activeShipments = [
 ];
 
 export default function LogisticsDT() {
-  const { role } = useRole();
-  const isOperator = role === 'operator';
+  const layout = usePageLayout('logistics');
+  const visibleKpis = getVisibleKpis(layout.items);
+  const showVolumeTrend = layout.isVisible('volume-trend');
+  const showRoutePerformance = layout.isVisible('route-performance');
 
   return (
     <div className="min-h-screen">
@@ -107,15 +68,24 @@ export default function LogisticsDT() {
         title="Logistics Digital Twin"
         subtitle="Transportation and distribution monitoring"
       />
-      <FilterBar showRoleSelector={false} />
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)}>
+        <FilterBar showRoleSelector={false} />
+      </PageToolbar>
 
       <div className="p-6 space-y-6">
-        <div className="grid grid-cols-4 gap-4">
-          {logisticsKpis.map((kpi) => (
-            <KpiCard key={kpi.id} kpi={kpi} />
-          ))}
-        </div>
+        {visibleKpis.length > 0 && (
+          <div className={`grid gap-4 ${
+            visibleKpis.length >= 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+            visibleKpis.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+            visibleKpis.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
+          }`}>
+            {visibleKpis.map((kpi) => (
+              <KpiCard key={kpi.id} kpi={kpi} />
+            ))}
+          </div>
+        )}
 
+        {layout.isVisible('shipment-stats') && (
         <div className="grid grid-cols-4 gap-4">
           {shipmentData.map((item) => (
             <div key={item.status} className="bg-white rounded-xl shadow-card p-4">
@@ -128,10 +98,12 @@ export default function LogisticsDT() {
             </div>
           ))}
         </div>
+        )}
 
-        {!isOperator && (
+        {(showVolumeTrend || showRoutePerformance) && (
         <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2 bg-white rounded-xl shadow-card p-5">
+          {showVolumeTrend && (
+          <div className={`${showRoutePerformance ? 'col-span-2' : 'col-span-3'} bg-white rounded-xl shadow-card p-5`}>
             <h3 className="font-semibold text-surface-900 mb-4">Volume Trend</h3>
             <div className="h-72">
               <ResponsiveContainer width="100%" height="100%">
@@ -163,7 +135,9 @@ export default function LogisticsDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          )}
 
+          {showRoutePerformance && (
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">Route Performance</h3>
             <div className="h-72">
@@ -182,9 +156,11 @@ export default function LogisticsDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          )}
         </div>
         )}
 
+        {layout.isVisible('active-shipments') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -263,7 +239,18 @@ export default function LogisticsDT() {
             </table>
           </div>
         </div>
+        )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Logistics Digital Twin"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
     </div>
   );
 }

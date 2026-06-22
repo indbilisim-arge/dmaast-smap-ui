@@ -12,57 +12,16 @@ import {
   ResponsiveContainer,
   LabelList,
 } from 'recharts';
-import { useRole } from '../../contexts/RoleContext';
 import { Package, AlertTriangle, CheckCircle, Search, Layers, Info, X, FileText } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
 import TooltipUI from '../../components/shared/Tooltip';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
-import type { KpiData } from '../../types';
-
-const productKpis: KpiData[] = [
-  {
-    id: 'yield-rate',
-    label: 'Yield Rate',
-    value: 98.2,
-    unit: '%',
-    trend: 0.5,
-    target: 99,
-    cluster: 'cost',
-    sparklineData: [97, 97.5, 97.8, 98, 98, 98.1, 98.2, 98.2],
-  },
-  {
-    id: 'defect-rate',
-    label: 'Defect Rate',
-    value: 1.8,
-    unit: '%',
-    trend: -0.3,
-    target: 1.5,
-    cluster: 'cost',
-    sparklineData: [2.5, 2.3, 2.2, 2.0, 1.9, 1.9, 1.8, 1.8],
-  },
-  {
-    id: 'first-pass-yield',
-    label: 'First Pass Yield',
-    value: 96.5,
-    unit: '%',
-    trend: 1.2,
-    target: 98,
-    cluster: 'cost',
-    sparklineData: [94, 94.5, 95, 95.5, 96, 96.2, 96.4, 96.5],
-  },
-  {
-    id: 'rework-rate',
-    label: 'Rework Rate',
-    value: 2.4,
-    unit: '%',
-    trend: -0.8,
-    target: 2.0,
-    cluster: 'cost',
-    sparklineData: [4.0, 3.5, 3.2, 3.0, 2.8, 2.6, 2.5, 2.4],
-  },
-];
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { getVisibleKpis } from '../../data/pageLayouts';
+import { usePageLayout } from '../../hooks/usePageLayout';
 
 const defectTypeData = [
   { type: 'Surface', count: 45, percentage: 32 },
@@ -148,8 +107,10 @@ const traceabilityData: TraceabilityItem[] = [
 
 export default function ProductDT() {
   const [selectedItem, setSelectedItem] = useState<TraceabilityItem | null>(null);
-  const { role } = useRole();
-  const isOperator = role === 'operator';
+  const layout = usePageLayout('product');
+  const visibleKpis = getVisibleKpis(layout.items);
+  const showQualityTrend = layout.isVisible('quality-trend');
+  const showDefectDistribution = layout.isVisible('defect-distribution');
 
   return (
     <div className="min-h-screen">
@@ -157,18 +118,27 @@ export default function ProductDT() {
         title="Product Digital Twin"
         subtitle="Quality monitoring and product traceability"
       />
-      <FilterBar showRoleSelector={false} />
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)}>
+        <FilterBar showRoleSelector={false} />
+      </PageToolbar>
 
       <div className="p-6 space-y-6">
-        <div className="grid grid-cols-4 gap-4">
-          {productKpis.map((kpi) => (
-            <KpiCard key={kpi.id} kpi={kpi} />
-          ))}
-        </div>
+        {visibleKpis.length > 0 && (
+          <div className={`grid gap-4 ${
+            visibleKpis.length >= 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+            visibleKpis.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+            visibleKpis.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
+          }`}>
+            {visibleKpis.map((kpi) => (
+              <KpiCard key={kpi.id} kpi={kpi} />
+            ))}
+          </div>
+        )}
 
-        {!isOperator && (
+        {(showQualityTrend || showDefectDistribution) && (
         <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2 bg-white rounded-xl shadow-card p-5 overflow-hidden">
+          {showQualityTrend && (
+          <div className={`${showDefectDistribution ? 'col-span-2' : 'col-span-3'} bg-white rounded-xl shadow-card p-5 overflow-hidden`}>
             <h3 className="font-semibold text-surface-900 mb-4">Quality Trend by Batch</h3>
             <div className="h-72 overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
@@ -187,7 +157,9 @@ export default function ProductDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          )}
 
+          {showDefectDistribution && (
           <div className="bg-white rounded-xl shadow-card p-5 overflow-hidden">
             <h3 className="font-semibold text-surface-900 mb-4">Defect Distribution</h3>
             <div className="h-72 overflow-hidden">
@@ -204,9 +176,11 @@ export default function ProductDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          )}
         </div>
         )}
 
+        {layout.isVisible('product-variants') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Product Variants Performance</h3>
           <div className="grid grid-cols-4 gap-4">
@@ -247,7 +221,9 @@ export default function ProductDT() {
             ))}
           </div>
         </div>
+        )}
 
+        {layout.isVisible('component-traceability') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-surface-900">Component Traceability</h3>
@@ -320,7 +296,18 @@ export default function ProductDT() {
             </tbody>
           </table>
         </div>
+        )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Product Digital Twin"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
 
       {selectedItem && selectedItem.failureDetails && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">

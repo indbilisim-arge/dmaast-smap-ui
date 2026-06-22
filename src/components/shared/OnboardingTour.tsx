@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, LayoutDashboard, Box, Lightbulb, Bell } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, LayoutDashboard, Box, Lightbulb, Bell, Check } from 'lucide-react';
 import { useLanguage } from '../../contexts/LanguageContext';
 
 const steps = [
@@ -12,6 +12,7 @@ const steps = [
 export default function OnboardingTour() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -20,6 +21,13 @@ export default function OnboardingTour() {
       setIsVisible(true);
     }
   }, []);
+
+  const dismiss = () => {
+    if (dontShowAgain) {
+      localStorage.setItem('smap-onboarding-complete', 'true');
+    }
+    setIsVisible(false);
+  };
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -34,11 +42,11 @@ export default function OnboardingTour() {
   };
 
   const handleFinish = () => {
-    setIsVisible(false);
+    dismiss();
   };
 
   const handleSkip = () => {
-    setIsVisible(false);
+    dismiss();
   };
 
   if (!isVisible) return null;
@@ -83,7 +91,22 @@ export default function OnboardingTour() {
             </p>
           </div>
 
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-surface-100">
+          <button
+            type="button"
+            onClick={() => setDontShowAgain(prev => !prev)}
+            className="flex items-center gap-2 mt-6 text-sm text-surface-600 hover:text-surface-800 transition-colors"
+          >
+            <span
+              className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
+                dontShowAgain ? 'bg-primary-500 border-primary-500' : 'border-surface-300 bg-white'
+              }`}
+            >
+              {dontShowAgain && <Check className="w-3 h-3 text-white" />}
+            </span>
+            {t('onboarding.dontShowAgain')}
+          </button>
+
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-surface-100">
             <button
               onClick={handleSkip}
               className="text-surface-500 hover:text-surface-700 text-sm transition-colors"

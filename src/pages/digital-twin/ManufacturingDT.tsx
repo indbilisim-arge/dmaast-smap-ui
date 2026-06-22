@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRole } from '../../contexts/RoleContext';
 import {
   BarChart,
   Bar,
@@ -21,8 +20,12 @@ import HelpPopover from '../../components/shared/HelpPopover';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
 import ExportPanel from '../../components/shared/ExportPanel';
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { getVisibleKpis } from '../../data/pageLayouts';
+import { usePageLayout } from '../../hooks/usePageLayout';
 import { default as TooltipUI } from '../../components/shared/Tooltip';
-import { dashboardKpis, productionTrendData } from '../../data/mockData';
+import { productionTrendData } from '../../data/mockData';
 
 const oeeBreakdown = [
   { name: 'Availability', value: 95.2, fill: '#0066b3' },
@@ -443,13 +446,9 @@ function WhatIfPanel() {
 }
 
 export default function ManufacturingDT() {
-  const { role } = useRole();
-  const isOperator = role === 'operator';
-  const isManager = role === 'manager';
-
-  const manufacturingKpis = dashboardKpis.filter(kpi =>
-    ['equipment-availability', 'production-throughput', 'oee', 'yield-rate'].includes(kpi.id)
-  );
+  const layout = usePageLayout('manufacturing');
+  const visibleKpis = getVisibleKpis(layout.items);
+  const showCharts = layout.isVisible('oee-breakdown') || layout.isVisible('production-output');
 
   return (
     <div className="min-h-screen">
@@ -457,31 +456,34 @@ export default function ManufacturingDT() {
         title="Manufacturing Digital Twin"
         subtitle="Real-time production monitoring and equipment status"
       />
-      <div className="flex items-center justify-between px-4 py-2 bg-white border-b border-surface-200">
+      <PageToolbar
+        onCustomize={() => layout.setShowCustomizer(true)}
+        trailing={
+          <ExportPanel
+            reportTitle="Manufacturing Digital Twin Analysis Report"
+            onExport={(format, sections) => console.log('Exporting:', format, sections)}
+          />
+        }
+      >
         <FilterBar showRoleSelector={false} showAutoRefresh={true} />
-        <ExportPanel
-          reportTitle="Manufacturing Digital Twin Analysis Report"
-          onExport={(format, sections) => console.log('Exporting:', format, sections)}
-        />
-      </div>
+      </PageToolbar>
 
       <div className="p-6 space-y-6" id="printable-content">
-        <div className="grid grid-cols-4 gap-4">
-          {manufacturingKpis.map((kpi) => (
-            <KpiCard key={kpi.id} kpi={kpi} />
-          ))}
-        </div>
-
-        {isOperator && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-            <p className="text-sm text-blue-800">
-              <span className="font-semibold">Operator View:</span> Showing real-time machine status and KPI overview. Use the alert center for active notifications.
-            </p>
+        {visibleKpis.length > 0 && (
+          <div className={`grid gap-4 ${
+            visibleKpis.length >= 4 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' :
+            visibleKpis.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
+            visibleKpis.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
+          }`}>
+            {visibleKpis.map((kpi) => (
+              <KpiCard key={kpi.id} kpi={kpi} />
+            ))}
           </div>
         )}
 
-        {!isOperator && (
+        {showCharts && (
         <div className="grid grid-cols-3 gap-6">
+          {layout.isVisible('oee-breakdown') && (
           <div className="bg-white rounded-xl shadow-card p-5">
             <h3 className="font-semibold text-surface-900 mb-4">OEE Breakdown</h3>
             <div className="h-64 flex items-center justify-center">
@@ -517,8 +519,10 @@ export default function ManufacturingDT() {
               <span className="text-sm text-surface-500 ml-2">Overall OEE</span>
             </div>
           </div>
+          )}
 
-          <div className="col-span-2 bg-white rounded-xl shadow-card p-5">
+          {layout.isVisible('production-output') && (
+          <div className={`${layout.isVisible('oee-breakdown') ? 'col-span-2' : 'col-span-3'} bg-white rounded-xl shadow-card p-5`}>
             <h3 className="font-semibold text-surface-900 mb-4">Production Output</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -536,9 +540,11 @@ export default function ManufacturingDT() {
               </ResponsiveContainer>
             </div>
           </div>
+          )}
         </div>
         )}
 
+        {layout.isVisible('machine-status') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
@@ -576,10 +582,11 @@ export default function ManufacturingDT() {
             ))}
           </div>
         </div>
+        )}
 
-        {!isOperator && <WhatIfPanel />}
+        {layout.isVisible('what-if-panel') && <WhatIfPanel />}
 
-        {!isOperator && !isManager && (
+        {layout.isVisible('cycle-time-analysis') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Cycle Time Analysis</h3>
           <div className="h-64">
@@ -600,6 +607,16 @@ export default function ManufacturingDT() {
         </div>
         )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Manufacturing Digital Twin"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
     </div>
   );
 }

@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { CheckCircle, RefreshCw, Clock, Zap, TrendingUp, ArrowUpRight, ArrowDownRight, BarChart3, ChevronDown } from 'lucide-react';
+import { CheckCircle, RefreshCw, Clock, TrendingUp, ArrowUpRight, ArrowDownRight, BarChart3, ChevronDown } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { usePageLayout } from '../../hooks/usePageLayout';
 
 interface KpiImpact {
   label: string;
@@ -181,6 +184,7 @@ function GanttChart({ data, label }: { data: GanttJob[]; label: string }) {
 export default function SchedulingAssessment() {
   const [selectedProcess, setSelectedProcess] = useState(PROCESSES[0]);
   const [approvedId, setApprovedId] = useState<string | null>(null);
+  const layout = usePageLayout('scheduling');
 
   return (
     <div className="min-h-screen bg-surface-50">
@@ -188,8 +192,10 @@ export default function SchedulingAssessment() {
         title="Scheduling Assessment"
         subtitle="Job scheduling optimization and KPI impact analysis"
       />
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)} />
 
       <div className="p-4 lg:p-6 space-y-6">
+        {layout.isVisible('process-scope') && (
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-base font-semibold text-surface-900">Process / Scope</h2>
@@ -210,7 +216,9 @@ export default function SchedulingAssessment() {
             <ChevronDown className="w-4 h-4 text-surface-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
         </div>
+        )}
 
+        {layout.isVisible('recommended-scenarios') && (
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h2 className="text-base font-semibold text-surface-900">Recommended Scenarios</h2>
@@ -288,7 +296,9 @@ export default function SchedulingAssessment() {
             })}
           </div>
         </div>
+        )}
 
+        {layout.isVisible('gantt-timeline') && (
         <div className="bg-white rounded-xl border border-surface-200 p-5">
           <div className="flex items-center gap-2 mb-5">
             <Clock className="w-5 h-5 text-primary-500" />
@@ -320,7 +330,9 @@ export default function SchedulingAssessment() {
             ))}
           </div>
         </div>
+        )}
 
+        {layout.isVisible('comparison-table') && (
         <div className="bg-white rounded-xl border border-surface-200 p-5">
           <div className="flex items-center gap-2 mb-5">
             <BarChart3 className="w-5 h-5 text-primary-500" />
@@ -362,7 +374,18 @@ export default function SchedulingAssessment() {
             </table>
           </div>
         </div>
+        )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Scheduling Assessment"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
     </div>
   );
 }

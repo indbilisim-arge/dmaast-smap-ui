@@ -20,7 +20,9 @@ import { ScenarioParameter } from '../../components/shared/ScenarioPanel';
 import Wizard from '../../components/shared/Wizard';
 import ComparisonView, { ComparisonMetric } from '../../components/shared/ComparisonView';
 import ImpactSummary, { ImpactItem } from '../../components/shared/ImpactSummary';
-import { useRole } from '../../contexts/RoleContext';
+import PageCustomizer from '../../components/shared/PageCustomizer';
+import PageToolbar from '../../components/shared/PageToolbar';
+import { usePageLayout } from '../../hooks/usePageLayout';
 
 const productionSimData = [
   { hour: '08:00', output: 45, target: 50, oee: 82 },
@@ -138,8 +140,7 @@ const defaultScenarioParams: ScenarioParameter[] = [
 ];
 
 export default function ManufacturingSim() {
-  const { role } = useRole();
-  const isManager = role === 'manager';
+  const layout = usePageLayout('manufacturing-sim');
   const [scenarioParams, setScenarioParams] = useState<ScenarioParameter[]>(defaultScenarioParams);
   const [isSimulating, setIsSimulating] = useState(false);
   const [simulationResults, setSimulationResults] = useState<{
@@ -333,8 +334,10 @@ export default function ManufacturingSim() {
         title="Manufacturing Simulation"
         subtitle="Production line modeling and bottleneck analysis"
       />
+      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)} />
 
       <div className="p-6 space-y-6">
+        {layout.isVisible('baseline-metrics') && (
         <div>
           <p className="text-xs font-medium text-surface-500 mb-2 uppercase tracking-wide">Current state (baseline from Digital Twin)</p>
           <div className="grid grid-cols-4 gap-4">
@@ -380,6 +383,7 @@ export default function ManufacturingSim() {
           </div>
           </div>
         </div>
+        )}
 
         <div className="flex items-center justify-between">
           <div />
@@ -412,19 +416,25 @@ export default function ManufacturingSim() {
         {simulationResults && (
           <>
             <p className="text-xs font-medium text-surface-500 uppercase tracking-wide">Simulation results — Current state vs. scenario outcome</p>
+            {layout.isVisible('impact-summary') && (
             <ImpactSummary
               impacts={simulationResults.impacts}
               scenarioName={simulationResults.scenarioName}
             />
+            )}
 
+            {layout.isVisible('comparison-view') && (
             <ComparisonView
               metrics={simulationResults.metrics}
               chartType="bar"
             />
+            )}
           </>
         )}
 
-        <div className={`grid ${isManager ? 'grid-cols-1' : 'grid-cols-2'} gap-6`}>
+        {(layout.isVisible('production-output') || layout.isVisible('machine-utilization')) && (
+        <div className={`grid ${layout.isVisible('machine-utilization') && layout.isVisible('production-output') ? 'grid-cols-2' : 'grid-cols-1'} gap-6`}>
+          {layout.isVisible('production-output') && (
           <div className="bg-white rounded-xl shadow-card p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-surface-900">Production Output Simulation</h3>
@@ -449,8 +459,9 @@ export default function ManufacturingSim() {
               </ResponsiveContainer>
             </div>
           </div>
+          )}
 
-          {!isManager && (
+          {layout.isVisible('machine-utilization') && (
             <div className="bg-white rounded-xl shadow-card p-5">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-surface-900">Machine Utilization</h3>
@@ -475,8 +486,9 @@ export default function ManufacturingSim() {
             </div>
           )}
         </div>
+        )}
 
-        {!isManager && (
+        {layout.isVisible('bottleneck-analysis') && (
           <div className="bg-white rounded-xl shadow-card p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-surface-900">Bottleneck Analysis</h3>
@@ -519,6 +531,16 @@ export default function ManufacturingSim() {
           </div>
         )}
       </div>
+
+      {layout.showCustomizer && (
+        <PageCustomizer
+          pageTitle="Manufacturing Simulation"
+          items={layout.items}
+          onSave={layout.saveLayout}
+          onClose={() => layout.setShowCustomizer(false)}
+          onResetToRoleDefault={layout.resetToRoleDefault}
+        />
+      )}
     </div>
   );
 }

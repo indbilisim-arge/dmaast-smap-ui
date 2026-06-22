@@ -75,6 +75,7 @@ const translations: Record<Language, Record<string, string>> = {
     'onboarding.prev': 'Previous',
     'onboarding.finish': 'Get Started',
     'onboarding.skip': 'Skip Tour',
+    'onboarding.dontShowAgain': "Don't show this again",
   },
   de: {
     'nav.dashboard': 'Dashboard',
@@ -142,6 +143,7 @@ const translations: Record<Language, Record<string, string>> = {
     'onboarding.prev': 'Zurück',
     'onboarding.finish': 'Loslegen',
     'onboarding.skip': 'Tour überspringen',
+    'onboarding.dontShowAgain': 'Nicht mehr anzeigen',
   },
   es: {
     'nav.dashboard': 'Panel de Control',
@@ -209,6 +211,7 @@ const translations: Record<Language, Record<string, string>> = {
     'onboarding.prev': 'Anterior',
     'onboarding.finish': 'Comenzar',
     'onboarding.skip': 'Saltar Tour',
+    'onboarding.dontShowAgain': 'No volver a mostrar',
   },
   fr: {
     'nav.dashboard': 'Tableau de Bord',
@@ -276,6 +279,7 @@ const translations: Record<Language, Record<string, string>> = {
     'onboarding.prev': 'Précédent',
     'onboarding.finish': 'Commencer',
     'onboarding.skip': 'Passer le Tour',
+    'onboarding.dontShowAgain': 'Ne plus afficher',
   },
   zh: {
     'nav.dashboard': '仪表板',
@@ -343,6 +347,7 @@ const translations: Record<Language, Record<string, string>> = {
     'onboarding.prev': '上一步',
     'onboarding.finish': '开始使用',
     'onboarding.skip': '跳过导览',
+    'onboarding.dontShowAgain': '不再显示',
   },
   tr: {
     'nav.dashboard': 'Kontrol Paneli',
@@ -410,6 +415,7 @@ const translations: Record<Language, Record<string, string>> = {
     'onboarding.prev': 'Geri',
     'onboarding.finish': 'Basla',
     'onboarding.skip': 'Turu Atla',
+    'onboarding.dontShowAgain': 'Bir daha gosterme',
   },
 };
 
