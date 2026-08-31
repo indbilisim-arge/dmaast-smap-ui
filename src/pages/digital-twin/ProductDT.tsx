@@ -18,8 +18,6 @@ import HelpPopover from '../../components/shared/HelpPopover';
 import TooltipUI from '../../components/shared/Tooltip';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
-import PageCustomizer from '../../components/shared/PageCustomizer';
-import PageToolbar from '../../components/shared/PageToolbar';
 import { getVisibleKpis } from '../../data/pageLayouts';
 import { usePageLayout } from '../../hooks/usePageLayout';
 
@@ -118,9 +116,7 @@ export default function ProductDT() {
         title="Product Digital Twin"
         subtitle="Quality monitoring and product traceability"
       />
-      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)}>
-        <FilterBar showRoleSelector={false} />
-      </PageToolbar>
+        <FilterBar />
 
       <div className="p-6 space-y-6">
         {visibleKpis.length > 0 && (
@@ -299,15 +295,6 @@ export default function ProductDT() {
         )}
       </div>
 
-      {layout.showCustomizer && (
-        <PageCustomizer
-          pageTitle="Product Digital Twin"
-          items={layout.items}
-          onSave={layout.saveLayout}
-          onClose={() => layout.setShowCustomizer(false)}
-          onResetToRoleDefault={layout.resetToRoleDefault}
-        />
-      )}
 
       {selectedItem && selectedItem.failureDetails && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">

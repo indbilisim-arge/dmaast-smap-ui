@@ -16,157 +16,21 @@ import {
   Cell,
   LabelList,
 } from 'recharts';
-import { Activity, TrendingUp, AlertTriangle, Clock, Settings, X, Check } from 'lucide-react';
+import { Activity, TrendingUp, AlertTriangle, Clock } from 'lucide-react';
 import Header from '../components/layout/Header';
 import FilterBar from '../components/shared/FilterBar';
 import KpiCard from '../components/shared/KpiCard';
 import AlertCard from '../components/shared/AlertCard';
-import TooltipUI from '../components/shared/Tooltip';
 import { TaskListWidget } from '../components/shared/HITLValidation';
 import { dashboardKpis, recentAlerts, productionTrendData, mudaData, hitlValidationTasks } from '../data/mockData';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useRole } from '../contexts/RoleContext';
 import { useToast } from '../contexts/ToastContext';
 import { useAccessibility } from '../contexts/AccessibilityContext';
-import PageCustomizer from '../components/shared/PageCustomizer';
-import PageToolbar from '../components/shared/PageToolbar';
 import { usePageLayout } from '../hooks/usePageLayout';
 
 const MUDA_COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#06b6d4'];
 const MUDA_PATTERN_IDS = ['muda-stripe', 'muda-dots', 'muda-crosshatch', 'muda-diagonal', 'muda-diamond', 'muda-horizontal', 'muda-zigzag'];
-
-const DATA_SOURCES = ['Manufacturing DT', 'Value Chain DT', 'Logistics DT', 'Sustainability DT'] as const;
-const TIME_RANGES = ['Last 24h', 'Last 7 Days', 'Last 30 Days', 'Custom'] as const;
-
-const WIDGET_METRICS: Record<string, string[]> = {
-  'quick-stats': ['OEE', 'Throughput', 'Lead Time', 'Alert Count'],
-  'kpi-primary': ['OEE', 'Throughput', 'Cycle Time', 'Yield', 'Downtime', 'Scrap Rate', 'Cost per Unit', 'Energy Usage'],
-  'production-trend': ['Actual Output', 'Target Output', 'Efficiency %', 'Defect Rate'],
-  'muda-analysis': ['Overproduction', 'Waiting', 'Transport', 'Rework', 'Overprocessing', 'Inventory', 'Motion'],
-  'waste-reduction': ['Current Value', 'Target Value', 'Reduction %', 'Cost Impact'],
-  'alerts': ['Critical', 'Warning', 'Info', 'Acknowledged'],
-  'kpi-secondary': ['Sustainability Score', 'Carbon Footprint', 'Water Usage', 'Waste Ratio'],
-};
-
-interface WidgetConfig {
-  dataSource: typeof DATA_SOURCES[number];
-  timeRange: typeof TIME_RANGES[number];
-  selectedMetrics: string[];
-}
-
-type WidgetConfigs = Record<string, WidgetConfig>;
-
-const defaultWidgetConfig = (widgetId: string): WidgetConfig => ({
-  dataSource: 'Manufacturing DT',
-  timeRange: 'Last 7 Days',
-  selectedMetrics: WIDGET_METRICS[widgetId] || [],
-});
-
-function WidgetConfigPanel({
-  widgetId,
-  widgetTitle,
-  config,
-  onSave,
-  onClose,
-}: {
-  widgetId: string;
-  widgetTitle: string;
-  config: WidgetConfig;
-  onSave: (widgetId: string, config: WidgetConfig) => void;
-  onClose: () => void;
-}) {
-  const [localConfig, setLocalConfig] = useState<WidgetConfig>(config);
-  const metrics = WIDGET_METRICS[widgetId] || [];
-
-  const handleMetricToggle = (metric: string) => {
-    setLocalConfig(prev => ({
-      ...prev,
-      selectedMetrics: prev.selectedMetrics.includes(metric)
-        ? prev.selectedMetrics.filter(m => m !== metric)
-        : [...prev.selectedMetrics, metric],
-    }));
-  };
-
-  return (
-    <div className="absolute right-0 top-8 z-40 w-72 bg-white rounded-xl shadow-2xl border border-surface-200 overflow-hidden">
-      <div className="flex items-center justify-between p-3 border-b border-surface-200 bg-surface-50">
-        <h4 className="text-sm font-semibold text-surface-900">{widgetTitle} Config</h4>
-        <TooltipUI content="Close configuration">
-          <button
-            onClick={onClose}
-            className="p-1 text-surface-400 hover:text-surface-600 rounded transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </TooltipUI>
-      </div>
-      <div className="p-3 space-y-3">
-        <div>
-          <label className="block text-xs font-medium text-surface-700 mb-1">Data Source</label>
-          <select
-            value={localConfig.dataSource}
-            onChange={(e) => setLocalConfig(prev => ({ ...prev, dataSource: e.target.value as typeof DATA_SOURCES[number] }))}
-            className="w-full px-2 py-1.5 text-sm border border-surface-200 rounded-lg bg-white text-surface-900 focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            {DATA_SOURCES.map(ds => (
-              <option key={ds} value={ds}>{ds}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-surface-700 mb-1">Time Range</label>
-          <select
-            value={localConfig.timeRange}
-            onChange={(e) => setLocalConfig(prev => ({ ...prev, timeRange: e.target.value as typeof TIME_RANGES[number] }))}
-            className="w-full px-2 py-1.5 text-sm border border-surface-200 rounded-lg bg-white text-surface-900 focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            {TIME_RANGES.map(tr => (
-              <option key={tr} value={tr}>{tr}</option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-surface-700 mb-1">Metrics</label>
-          <div className="space-y-1 max-h-32 overflow-y-auto">
-            {metrics.map(metric => (
-              <button
-                key={metric}
-                type="button"
-                onClick={() => handleMetricToggle(metric)}
-                className="flex items-center gap-2 px-2 py-1 rounded hover:bg-surface-50 cursor-pointer w-full text-left"
-              >
-                <span className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${
-                  localConfig.selectedMetrics.includes(metric)
-                    ? 'bg-primary-500 border-primary-500'
-                    : 'border-surface-300 bg-white'
-                }`}>
-                  {localConfig.selectedMetrics.includes(metric) && (
-                    <Check className="w-3 h-3 text-white" />
-                  )}
-                </span>
-                <span className="text-sm text-surface-700">{metric}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center justify-end gap-2 p-3 border-t border-surface-200 bg-surface-50">
-        <button
-          onClick={onClose}
-          className="px-3 py-1.5 text-xs text-surface-600 hover:bg-surface-200 rounded-lg transition-colors"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={() => { onSave(widgetId, localConfig); onClose(); }}
-          className="px-3 py-1.5 text-xs bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-        >
-          Apply
-        </button>
-      </div>
-    </div>
-  );
-}
 
 const WIDGET_SIZES: Record<string, 'small' | 'medium' | 'large'> = {
   'quick-stats': 'large',
@@ -186,13 +50,12 @@ interface DashboardWidget {
 
 export default function Dashboard() {
   const { t } = useLanguage();
-  const { config, hasPermission } = useRole();
+  const { config } = useRole();
   const { showToast } = useToast();
   const { settings: a11y } = useAccessibility();
   const location = useLocation();
   const navigate = useNavigate();
   const isLite = a11y.liteMode;
-  const canConfigure = hasPermission('canConfigureDashboards');
   const criticalAlerts = recentAlerts.filter(a => a.severity === 'critical' && !a.acknowledged);
 
   useEffect(() => {
@@ -224,38 +87,11 @@ export default function Dashboard() {
   }, []);
 
   const layout = usePageLayout('dashboard');
-  const [activeConfigPanel, setActiveConfigPanel] = useState<string | null>(null);
-
-  const [widgetConfigs, setWidgetConfigs] = useState<WidgetConfigs>(() => {
-    const saved = localStorage.getItem('smap-widget-configs');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return {};
-      }
-    }
-    return {};
-  });
-
-  const getWidgetConfig = useCallback((widgetId: string): WidgetConfig => {
-    return widgetConfigs[widgetId] || defaultWidgetConfig(widgetId);
-  }, [widgetConfigs]);
-
-  const handleSaveWidgetConfig = useCallback((widgetId: string, newConfig: WidgetConfig) => {
-    setWidgetConfigs(prev => {
-      const updated = { ...prev, [widgetId]: newConfig };
-      localStorage.setItem('smap-widget-configs', JSON.stringify(updated));
-      return updated;
-    });
-  }, []);
 
   const visibleWidgets: DashboardWidget[] = layout.visibleWidgetItems.map((item) => ({
     id: item.id,
     size: WIDGET_SIZES[item.id] || 'medium',
   }));
-
-  const isWidgetVisible = (id: string) => layout.isVisible(id);
 
   const quickStats = [
     { label: t('dashboard.alerts'), value: criticalAlerts.length, icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
@@ -271,25 +107,6 @@ export default function Dashboard() {
           <div>
             <div className="flex items-center justify-between mb-3 relative">
               <h3 className="font-semibold text-surface-900">Quick Stats</h3>
-              {canConfigure && (
-                <TooltipUI content="Configure widget">
-                  <button
-                    onClick={() => setActiveConfigPanel(activeConfigPanel === 'quick-stats' ? null : 'quick-stats')}
-                    className="p-1.5 text-surface-400 hover:text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </button>
-                </TooltipUI>
-              )}
-              {activeConfigPanel === 'quick-stats' && (
-                <WidgetConfigPanel
-                  widgetId="quick-stats"
-                  widgetTitle="Quick Stats"
-                  config={getWidgetConfig('quick-stats')}
-                  onSave={handleSaveWidgetConfig}
-                  onClose={() => setActiveConfigPanel(null)}
-                />
-              )}
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
               {quickStats.map((stat) => (
@@ -312,25 +129,6 @@ export default function Dashboard() {
           <div>
             <div className="flex items-center justify-between mb-3 relative">
               <h3 className="font-semibold text-surface-900">Primary KPIs</h3>
-              {canConfigure && (
-                <TooltipUI content="Configure widget">
-                  <button
-                    onClick={() => setActiveConfigPanel(activeConfigPanel === 'kpi-primary' ? null : 'kpi-primary')}
-                    className="p-1.5 text-surface-400 hover:text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </button>
-                </TooltipUI>
-              )}
-              {activeConfigPanel === 'kpi-primary' && (
-                <WidgetConfigPanel
-                  widgetId="kpi-primary"
-                  widgetTitle="Primary KPIs"
-                  config={getWidgetConfig('kpi-primary')}
-                  onSave={handleSaveWidgetConfig}
-                  onClose={() => setActiveConfigPanel(null)}
-                />
-              )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
               {dashboardKpis.slice(0, isLite ? 4 : 8).map((kpi) => (
@@ -345,25 +143,6 @@ export default function Dashboard() {
           <div className="lg:col-span-2 bg-white rounded-xl shadow-card p-4 lg:p-5 overflow-hidden">
             <div className="flex items-center justify-between mb-4 relative">
               <h3 className="font-semibold text-surface-900">Production Trend</h3>
-              {canConfigure && (
-                <TooltipUI content="Configure widget">
-                  <button
-                    onClick={() => setActiveConfigPanel(activeConfigPanel === 'production-trend' ? null : 'production-trend')}
-                    className="p-1.5 text-surface-400 hover:text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </button>
-                </TooltipUI>
-              )}
-              {activeConfigPanel === 'production-trend' && (
-                <WidgetConfigPanel
-                  widgetId="production-trend"
-                  widgetTitle="Production Trend"
-                  config={getWidgetConfig('production-trend')}
-                  onSave={handleSaveWidgetConfig}
-                  onClose={() => setActiveConfigPanel(null)}
-                />
-              )}
             </div>
             <div className="h-64 lg:h-72 overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
@@ -429,25 +208,6 @@ export default function Dashboard() {
           <div className="bg-white rounded-xl shadow-card p-4 lg:p-5 overflow-hidden">
             <div className="flex items-center justify-between mb-4 relative">
               <h3 className="font-semibold text-surface-900">MUDA Analysis</h3>
-              {canConfigure && (
-                <TooltipUI content="Configure widget">
-                  <button
-                    onClick={() => setActiveConfigPanel(activeConfigPanel === 'muda-analysis' ? null : 'muda-analysis')}
-                    className="p-1.5 text-surface-400 hover:text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </button>
-                </TooltipUI>
-              )}
-              {activeConfigPanel === 'muda-analysis' && (
-                <WidgetConfigPanel
-                  widgetId="muda-analysis"
-                  widgetTitle="MUDA Analysis"
-                  config={getWidgetConfig('muda-analysis')}
-                  onSave={handleSaveWidgetConfig}
-                  onClose={() => setActiveConfigPanel(null)}
-                />
-              )}
             </div>
             <div className="h-64 lg:h-72 overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
@@ -582,25 +342,6 @@ export default function Dashboard() {
           <div className="lg:col-span-2 bg-white rounded-xl shadow-card p-4 lg:p-5 overflow-hidden">
             <div className="flex items-center justify-between mb-4 relative">
               <h3 className="font-semibold text-surface-900">Waste Reduction Progress</h3>
-              {canConfigure && (
-                <TooltipUI content="Configure widget">
-                  <button
-                    onClick={() => setActiveConfigPanel(activeConfigPanel === 'waste-reduction' ? null : 'waste-reduction')}
-                    className="p-1.5 text-surface-400 hover:text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </button>
-                </TooltipUI>
-              )}
-              {activeConfigPanel === 'waste-reduction' && (
-                <WidgetConfigPanel
-                  widgetId="waste-reduction"
-                  widgetTitle="Waste Reduction"
-                  config={getWidgetConfig('waste-reduction')}
-                  onSave={handleSaveWidgetConfig}
-                  onClose={() => setActiveConfigPanel(null)}
-                />
-              )}
             </div>
             <div className="h-64 lg:h-72 overflow-hidden">
               <ResponsiveContainer width="100%" height="100%">
@@ -645,29 +386,10 @@ export default function Dashboard() {
             <div className="flex items-center justify-between mb-4 flex-shrink-0 relative">
               <h3 className="font-semibold text-surface-900">{t('dashboard.alerts')}</h3>
               <div className="flex items-center gap-2">
-                {canConfigure && (
-                  <TooltipUI content="Configure widget">
-                    <button
-                      onClick={() => setActiveConfigPanel(activeConfigPanel === 'alerts' ? null : 'alerts')}
-                      className="p-1.5 text-surface-400 hover:text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-                    >
-                      <Settings className="w-4 h-4" />
-                    </button>
-                  </TooltipUI>
-                )}
                 <a href="/alerts" className="text-sm text-primary-600 hover:text-primary-700">
                   {t('dashboard.viewAll')}
                 </a>
               </div>
-              {activeConfigPanel === 'alerts' && (
-                <WidgetConfigPanel
-                  widgetId="alerts"
-                  widgetTitle="Alerts"
-                  config={getWidgetConfig('alerts')}
-                  onSave={handleSaveWidgetConfig}
-                  onClose={() => setActiveConfigPanel(null)}
-                />
-              )}
             </div>
             <div className="space-y-3 overflow-y-auto flex-1 min-h-0">
               {recentAlerts.slice(0, isLite ? 2 : 3).map((alert) => (
@@ -691,25 +413,6 @@ export default function Dashboard() {
           <div>
             <div className="flex items-center justify-between mb-3 relative">
               <h3 className="font-semibold text-surface-900">Secondary KPIs</h3>
-              {canConfigure && (
-                <TooltipUI content="Configure widget">
-                  <button
-                    onClick={() => setActiveConfigPanel(activeConfigPanel === 'kpi-secondary' ? null : 'kpi-secondary')}
-                    className="p-1.5 text-surface-400 hover:text-surface-600 hover:bg-surface-100 rounded-lg transition-colors"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </button>
-                </TooltipUI>
-              )}
-              {activeConfigPanel === 'kpi-secondary' && (
-                <WidgetConfigPanel
-                  widgetId="kpi-secondary"
-                  widgetTitle="Secondary KPIs"
-                  config={getWidgetConfig('kpi-secondary')}
-                  onSave={handleSaveWidgetConfig}
-                  onClose={() => setActiveConfigPanel(null)}
-                />
-              )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
               {dashboardKpis.slice(8).map((kpi) => (
@@ -795,9 +498,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen">
       <Header title={t('dashboard.title')} subtitle={t('dashboard.subtitle')} />
-      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)}>
-        <FilterBar showRoleSelector={false} />
-      </PageToolbar>
+        <FilterBar />
 
       <div className="mx-4 lg:mx-6 mt-4 px-4 py-3 bg-primary-50 border border-primary-200 rounded-lg flex items-center justify-between">
         <p className="text-sm text-primary-800">
@@ -811,15 +512,6 @@ export default function Dashboard() {
         {renderDynamicWidgets()}
       </div>
 
-      {layout.showCustomizer && (
-        <PageCustomizer
-          pageTitle={t('dashboard.title')}
-          items={layout.items}
-          onSave={layout.saveLayout}
-          onClose={() => layout.setShowCustomizer(false)}
-          onResetToRoleDefault={layout.resetToRoleDefault}
-        />
-      )}
     </div>
   );
 }

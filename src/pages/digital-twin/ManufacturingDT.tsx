@@ -20,8 +20,6 @@ import HelpPopover from '../../components/shared/HelpPopover';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
 import ExportPanel from '../../components/shared/ExportPanel';
-import PageCustomizer from '../../components/shared/PageCustomizer';
-import PageToolbar from '../../components/shared/PageToolbar';
 import { getVisibleKpis } from '../../data/pageLayouts';
 import { usePageLayout } from '../../hooks/usePageLayout';
 import { default as TooltipUI } from '../../components/shared/Tooltip';
@@ -31,6 +29,33 @@ const oeeBreakdown = [
   { name: 'Availability', value: 95.2, fill: '#0066b3' },
   { name: 'Performance', value: 92.5, fill: '#2a9d8f' },
   { name: 'Quality', value: 99.1, fill: '#10b981' },
+];
+
+/* ---------------------------------------------------------------------------
+ * KAM — Material Readiness.
+ * OLCULEN degerler: KAM IFS ihraci "Shop Orders  Assembly.xlsx", 970 is emri,
+ * kolon "Shop Order Material Summary Status" (tekil = 3).
+ * Bu kart uydurma sayi TASIMAZ; asagidaki adetler ham veriden sayilmistir.
+ * ------------------------------------------------------------------------- */
+const MATERIAL_READINESS = [
+  { label: 'Completely Issued', count: 760, bar: 'bg-green-500' },
+  { label: 'Partially Issued', count: 208, bar: 'bg-amber-500' },
+  { label: 'Not Reserved', count: 2, bar: 'bg-red-500' },
+];
+const MATERIAL_READINESS_TOTAL = MATERIAL_READINESS.reduce((s, x) => s + x.count, 0);
+
+/* ---------------------------------------------------------------------------
+ * JPB — Actual vs Planned Hours.
+ * OLCULEN toplamlar: TBL_GAMME (244.290 satir), GA_NBH (plan) / GA_NBHR (fiili),
+ * COFRAIS (operasyon faz kodu) bazinda toplanmistir. Saat cinsinden.
+ * DISARIDA BIRAKILANLAR: LIVRA (plan 147 s / fiili 50.551 s) ve OUV10
+ * (plan 7 s / fiili 43.930 s) — bu fazlarda plan saati tutulmuyor, sapma anlamsiz.
+ * ------------------------------------------------------------------------- */
+const ACTUAL_VS_PLANNED = [
+  { phase: 'USI10', planned: 165626, actual: 190455 },
+  { phase: 'CONTR', planned: 66677, actual: 29144 },
+  { phase: 'CARRE', planned: 26365, actual: 26066 },
+  { phase: 'EBAVM', planned: 26019, actual: 24088 },
 ];
 
 const machineData = [
@@ -456,17 +481,17 @@ export default function ManufacturingDT() {
         title="Manufacturing Digital Twin"
         subtitle="Real-time production monitoring and equipment status"
       />
-      <PageToolbar
-        onCustomize={() => layout.setShowCustomizer(true)}
-        trailing={
+      <div className="flex items-center justify-between bg-white border-b border-surface-200">
+        <div className="flex-1 min-w-0">
+          <FilterBar showAutoRefresh={true} />
+        </div>
+        <div className="pr-4 flex-shrink-0">
           <ExportPanel
             reportTitle="Manufacturing Digital Twin Analysis Report"
             onExport={(format, sections) => console.log('Exporting:', format, sections)}
           />
-        }
-      >
-        <FilterBar showRoleSelector={false} showAutoRefresh={true} />
-      </PageToolbar>
+        </div>
+      </div>
 
       <div className="p-6 space-y-6" id="printable-content">
         {visibleKpis.length > 0 && (
@@ -586,6 +611,77 @@ export default function ManufacturingDT() {
 
         {layout.isVisible('what-if-panel') && <WhatIfPanel />}
 
+        {/* KAM — Material Readiness. Rakamlar KAM IFS ihracindan OLCULDU
+            (Shop Orders Assembly, 970 is emri, 'Shop Order Material Summary Status'). */}
+        {layout.isVisible('material-readiness') && (
+          <div className="bg-white rounded-xl shadow-card p-5">
+            <div className="flex items-baseline justify-between mb-1">
+              <h3 className="font-semibold text-surface-900">Material Readiness</h3>
+              <span className="text-xs text-surface-400">
+                Source: Shop Orders · Material Summary Status
+              </span>
+            </div>
+            <p className="text-sm text-surface-500 mb-4">
+              Material issue state across open and closed shop orders.
+            </p>
+
+            <div className="flex h-3 w-full overflow-hidden rounded-full bg-surface-100">
+              {MATERIAL_READINESS.map((s) => (
+                <div
+                  key={s.label}
+                  className={s.bar}
+                  style={{ width: `${(s.count / MATERIAL_READINESS_TOTAL) * 100}%` }}
+                  title={`${s.label}: ${s.count}`}
+                />
+              ))}
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {MATERIAL_READINESS.map((s) => (
+                <div key={s.label} className="rounded-lg border border-surface-200 p-3">
+                  <div className="flex items-center gap-2">
+                    <span className={`h-2.5 w-2.5 rounded-full ${s.bar}`} />
+                    <span className="text-sm text-surface-600">{s.label}</span>
+                  </div>
+                  <p className="mt-1 text-2xl font-semibold text-surface-900">{s.count}</p>
+                  <p className="text-xs text-surface-500">
+                    {((s.count / MATERIAL_READINESS_TOTAL) * 100).toFixed(1)}% of{' '}
+                    {MATERIAL_READINESS_TOTAL}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* JPB — Actual vs Planned Hours. Toplamlar TBL_GAMME'den OLCULDU
+            (GA_NBH plan / GA_NBHR fiili, COFRAIS bazinda). Plan saati tutulmayan
+            operasyonlar (LIVRA, OUV*) disarida birakildi — sapma anlamsiz olurdu. */}
+        {layout.isVisible('actual-vs-planned-hours') && (
+          <div className="bg-white rounded-xl shadow-card p-5">
+            <div className="flex items-baseline justify-between mb-1">
+              <h3 className="font-semibold text-surface-900">Actual vs Planned Hours</h3>
+              <span className="text-xs text-surface-400">Source: Routing · GA_NBH / GA_NBHR</span>
+            </div>
+            <p className="text-sm text-surface-500 mb-4">
+              Recorded hours against routing standard, by operation phase.
+            </p>
+            <div className="h-64">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={ACTUAL_VS_PLANNED}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
+                  <XAxis dataKey="phase" tick={{ fontSize: 12 }} stroke="#737373" />
+                  <YAxis tick={{ fontSize: 12 }} stroke="#737373" />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="planned" fill="#a3a3a3" name="Planned" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="actual" fill="#0066b3" name="Actual" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+
         {layout.isVisible('cycle-time-analysis') && (
         <div className="bg-white rounded-xl shadow-card p-5">
           <h3 className="font-semibold text-surface-900 mb-4">Cycle Time Analysis</h3>
@@ -608,15 +704,6 @@ export default function ManufacturingDT() {
         )}
       </div>
 
-      {layout.showCustomizer && (
-        <PageCustomizer
-          pageTitle="Manufacturing Digital Twin"
-          items={layout.items}
-          onSave={layout.saveLayout}
-          onClose={() => layout.setShowCustomizer(false)}
-          onResetToRoleDefault={layout.resetToRoleDefault}
-        />
-      )}
     </div>
   );
 }

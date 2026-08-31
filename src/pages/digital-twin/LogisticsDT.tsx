@@ -18,8 +18,6 @@ import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
-import PageCustomizer from '../../components/shared/PageCustomizer';
-import PageToolbar from '../../components/shared/PageToolbar';
 import { getVisibleKpis } from '../../data/pageLayouts';
 import { usePageLayout } from '../../hooks/usePageLayout';
 
@@ -68,9 +66,7 @@ export default function LogisticsDT() {
         title="Logistics Digital Twin"
         subtitle="Transportation and distribution monitoring"
       />
-      <PageToolbar onCustomize={() => layout.setShowCustomizer(true)}>
-        <FilterBar showRoleSelector={false} />
-      </PageToolbar>
+        <FilterBar />
 
       <div className="p-6 space-y-6">
         {visibleKpis.length > 0 && (
@@ -242,15 +238,6 @@ export default function LogisticsDT() {
         )}
       </div>
 
-      {layout.showCustomizer && (
-        <PageCustomizer
-          pageTitle="Logistics Digital Twin"
-          items={layout.items}
-          onSave={layout.saveLayout}
-          onClose={() => layout.setShowCustomizer(false)}
-          onResetToRoleDefault={layout.resetToRoleDefault}
-        />
-      )}
     </div>
   );
 }
