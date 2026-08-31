@@ -1,4 +1,4 @@
-import type { KpiData, Alert, DigitalTwinNode, SimulationScenario } from '../types';
+import type { KpiData, DigitalTwinNode, SimulationScenario } from '../types';
 
 export const dashboardKpis: KpiData[] = [
   {
@@ -159,53 +159,16 @@ export const dashboardKpis: KpiData[] = [
   },
 ];
 
-export const recentAlerts: Alert[] = [
-  {
-    id: 'alert-1',
-    title: 'Machine M-102 Temperature Warning',
-    message: 'Temperature sensor reading 85°C, approaching threshold of 90°C',
-    severity: 'warning',
-    timestamp: new Date(Date.now() - 15 * 60000),
-    source: 'Manufacturing DT',
-    acknowledged: false,
-  },
-  {
-    id: 'alert-2',
-    title: 'Supplier Delivery Delay',
-    message: 'Shipment #SH-2847 from Supplier A delayed by 2 days',
-    severity: 'warning',
-    timestamp: new Date(Date.now() - 45 * 60000),
-    source: 'Logistics DT',
-    acknowledged: false,
-  },
-  {
-    id: 'alert-3',
-    title: 'Low Stock Alert - Component C-445',
-    message: 'Stock level at 15% of safety stock threshold',
-    severity: 'critical',
-    timestamp: new Date(Date.now() - 120 * 60000),
-    source: 'Value Chain DT',
-    acknowledged: true,
-  },
-  {
-    id: 'alert-4',
-    title: 'Energy Consumption Spike',
-    message: 'Line 3 energy consumption 25% above baseline',
-    severity: 'info',
-    timestamp: new Date(Date.now() - 180 * 60000),
-    source: 'Sustainability DT',
-    acknowledged: false,
-  },
-  {
-    id: 'alert-5',
-    title: 'Quality Deviation Detected',
-    message: 'Product batch B-1247 showing 3.2% defect rate',
-    severity: 'critical',
-    timestamp: new Date(Date.now() - 240 * 60000),
-    source: 'Product DT',
-    acknowledged: false,
-  },
-];
+/*
+ * recentAlerts KALDIRILDI — 2026-08-31, Isil karari:
+ * "uydurma olanlarin hepsi cikartilsin, sadece gercekten gozukebilecekler kalsin".
+ *
+ * Buradaki 5 (+ AlertCenter icindeki 5) alarm elle uydurulmustu ve yedisi iki
+ * firmada da BULUNMAYAN veriyi anlatiyordu: sensor sicakligi, enerji x2, makine
+ * bakimi/durusu, OEE, reorder point, tedarikci puani.
+ *
+ * Yerine gecen tek kaynak: data/alerts.ts — dordu de ham veriden olculmustur.
+ */
 
 export const valueChainNodes: DigitalTwinNode[] = [
   {
@@ -308,15 +271,12 @@ export const simulationScenarios: SimulationScenario[] = [
   },
 ];
 
-export const mudaData = [
-  { category: 'Overproduction', value: 12, target: 5 },
-  { category: 'Waiting', value: 18, target: 10 },
-  { category: 'Transport', value: 8, target: 5 },
-  { category: 'Rework', value: 15, target: 8 },
-  { category: 'Overprocessing', value: 6, target: 3 },
-  { category: 'Inventory', value: 22, target: 15 },
-  { category: 'Motion', value: 9, target: 5 },
-];
+/*
+ * mudaData KALDIRILDI — 2026-08-31 (Isil onayi).
+ * 7 israf kategorisi elle uydurulmustu. KPI tablolarinda yalnizca JPB
+ * 'Waiting time' tanimli; o da POINT.TYPEALEA alani 272.078 satirin
+ * hepsinde '0' oldugu icin olculemiyor.
+ */
 
 export const paretoFrontData = [
   { id: 'p1', cost: 85, leadTime: 14.5, sustainability: 125, selected: false },

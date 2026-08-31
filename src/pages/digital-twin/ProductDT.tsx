@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   BarChart,
   Bar,
@@ -12,10 +11,9 @@ import {
   ResponsiveContainer,
   LabelList,
 } from 'recharts';
-import { Package, AlertTriangle, CheckCircle, Search, Layers, Info, X, FileText } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Search, Layers } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
-import TooltipUI from '../../components/shared/Tooltip';
 import FilterBar from '../../components/shared/FilterBar';
 import KpiCard from '../../components/shared/KpiCard';
 import { getVisibleKpis } from '../../data/pageLayouts';
@@ -46,65 +44,83 @@ const productVariants = [
   { id: 'PRD-D', name: 'Product D - Custom', yield: 99.1, volume: 1200, status: 'good' },
 ];
 
+/* ---------------------------------------------------------------------------
+ * JPB — Component Traceability. OLCULEN veri, uydurma satir YOK.
+ * Kaynak: TBL_LOTIE (34.861 lot) + TBL_Qual_Blocage (blokaj kodu -> aciklama).
+ * Kolon doluluk: COARTI %100 · LOT %99,4 · DATEREC %100 · BLOCAGE %100 ·
+ *                QTE %100 · CERTIF %28,1 (bos gelebilir, oyle gosterilir).
+ * BLOCAGE dagilimi: AUCUN 32.570 (%93,4) · bloke 1.598 (%4,58) · kod 0: 693.
+ * Asagidaki satirlar tablonun EN GUNCEL kayitlaridir (Eylul 2024 — JPB
+ * verisinin bittigi yer). Olcum 2026-08-31.
+ * ------------------------------------------------------------------------- */
 interface TraceabilityItem {
+  /** COARTI — parca / malzeme kodu */
   component: string;
-  supplier: string;
-  batch: string;
-  inspected: boolean;
-  passed: boolean | null;
-  failureReason?: string;
-  failureDetails?: {
-    defectType: string;
-    severity: string;
-    inspector: string;
-    timestamp: string;
-    images?: number;
-    correctionAction: string;
-  };
+  /** LOT — parti numarasi (%0,6 bos) */
+  lot: string;
+  /** CERTIF — sertifika referansi (%71,9 bos) */
+  certificate: string;
+  /** DATEREC — giris tarihi */
+  received: string;
+  /** QTE */
+  qty: number;
+  /** BLOCAGE kodu — '1' ve '0' serbest, digerleri bloke */
+  blockCode: string;
+  /** TBL_Qual_Blocage.DESPAR karsiligi */
+  blockLabel: string;
 }
 
 const traceabilityData: TraceabilityItem[] = [
-  {
-    component: 'C-445',
-    supplier: 'Supplier A',
-    batch: 'BA-2847',
-    inspected: true,
-    passed: true
-  },
-  {
-    component: 'C-446',
-    supplier: 'Supplier B',
-    batch: 'BB-1923',
-    inspected: true,
-    passed: true
-  },
-  {
-    component: 'C-447',
-    supplier: 'Supplier A',
-    batch: 'BA-2848',
-    inspected: true,
-    passed: false,
-    failureReason: 'Dimensional tolerance exceeded',
-    failureDetails: {
-      defectType: 'Dimensional - Out of Spec',
-      severity: 'Critical',
-      inspector: 'QA Team 2',
-      timestamp: '2026-01-30 14:25:00',
-      images: 3,
-      correctionAction: 'Batch rejected - Supplier notified for corrective action. Root cause analysis initiated.',
-    }
-  },
-  {
-    component: 'C-448',
-    supplier: 'Supplier C',
-    batch: 'BC-0567',
-    inspected: false,
-    passed: null
-  },
+  { component: 'S5886-805', lot: '24W39-48270', certificate: '', received: '25.09.2024', qty: 91, blockCode: '100', blockLabel: 'ATTENTE VALIDATION INTERNE' },
+  { component: 'S5886-808', lot: '24W39-48916', certificate: '', received: '25.09.2024', qty: 274, blockCode: '100', blockLabel: 'ATTENTE VALIDATION INTERNE' },
+  { component: '2073M57P03', lot: '24W39-50000/1', certificate: '', received: '25.09.2024', qty: 1, blockCode: '100', blockLabel: 'ATTENTE VALIDATION INTERNE' },
+  { component: 'AMS 5666 ⌀22.22', lot: '324969', certificate: '1346045', received: '24.09.2024', qty: 301.37, blockCode: '100', blockLabel: 'ATTENTE VALIDATION INTERNE' },
+  { component: 'STR/MAT_JPB210779-56', lot: '11W28', certificate: '19773', received: '04.10.2011', qty: 600, blockCode: '101', blockLabel: 'QUARANTAINE' },
+  { component: 'ST5362-06', lot: '24W39-48327/1', certificate: '', received: '25.09.2024', qty: 311, blockCode: '1', blockLabel: 'AUCUN' },
+  { component: 'JPB05000ST2059', lot: '24W39-49743/1', certificate: '', received: '25.09.2024', qty: 12, blockCode: '1', blockLabel: 'AUCUN' },
 ];
 
+const isBlocked = (item: TraceabilityItem) => !['0', '1'].includes(item.blockCode);
+
+/* ---------------------------------------------------------------------------
+ * KAM — Receipt Inspection. Traceability karsiligi DEGIL, KAM'in kendi yapisi:
+ * KAM parti (lot) tutmuyor ve bu tabloda tedarikci kolonu yok, o yuzden ayni
+ * kart kurulamadi (Isil karari 2026-08-31: "KAM icin olabilecek yapiyi farkli
+ * sekilde kuruyoruz").
+ *
+ * Kaynak: Receipts.xlsx — 999 mal kabul kaydi, 150 tekil parca.
+ * Kolonlar %100 dolu: Part No · Arrived Qty · Inspected Qty · Scrapped Qty ·
+ * Returned Qty. ('Inspection Code' %22,3 dolu ama TEKIL=1 — bilgi tasimiyor,
+ * alinmadi.)
+ * Toplam: gelen 276.103.286 · muayene 10.992.151 (%4,0) · hurda 2.275 ·
+ * iade 2.168.972. Hurda veya iadesi olan parca sayisi: 12.
+ *
+ * NOT: birkac parcada muayene > gelen gorunuyor (ornegin 30261290: 378.550 >
+ * 377.500). Sebep toplamanin farkli donemlerdeki kabullere yayilmasi; sayilar
+ * ham veriden oldugu gibi alindi, duzeltilmedi. Olcum 2026-08-31.
+ * ------------------------------------------------------------------------- */
+interface ReceiptInspectionItem {
+  part: string;
+  description: string;
+  arrived: number;
+  inspected: number;
+  scrapped: number;
+  returned: number;
+}
+
+const receiptInspectionData: ReceiptInspectionItem[] = [
+  { part: '1645055', description: 'Pressfit pin 18.20mm', arrived: 7795200, inspected: 4078900, scrapped: 0, returned: 2092300 },
+  { part: '30261126', description: 'Transducer box asm.', arrived: 394624, inspected: 330784, scrapped: 352, returned: 76672 },
+  { part: '30261290', description: 'Dessicant Box assembly', arrived: 377500, inspected: 378550, scrapped: 1050, returned: 0 },
+  { part: '2006697', description: 'Preprinted traylabel', arrived: 302750, inspected: 303500, scrapped: 750, returned: 0 },
+  { part: '1980511', description: 'Packaging tray Raised bottom', arrived: 614400, inspected: 314881, scrapped: 25, returned: 0 },
+  { part: '2210216', description: 'Strainer (⌀17)', arrived: 720090, inspected: 379913, scrapped: 23, returned: 0 },
+  { part: '1731269', description: 'MLCC 100n 25V 0402 X7R ±10%', arrived: 34450000, inspected: 0, scrapped: 0, returned: 0 },
+  { part: '1729008', description: 'RESISTOR 10K0 1% 0402 TC100 62mW', arrived: 20020000, inspected: 0, scrapped: 0, returned: 0 },
+];
+
+
 export default function ProductDT() {
-  const [selectedItem, setSelectedItem] = useState<TraceabilityItem | null>(null);
   const layout = usePageLayout('product');
   const visibleKpis = getVisibleKpis(layout.items);
   const showQualityTrend = layout.isVisible('quality-trend');
@@ -242,50 +258,45 @@ export default function ProductDT() {
             <thead>
               <tr className="border-b border-surface-200">
                 <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Component</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Supplier</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Batch</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Inspection</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Lot</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Certificate</th>
+                <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Received</th>
+                <th className="text-right py-3 px-4 text-sm font-medium text-surface-600">Qty</th>
                 <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Status</th>
-                <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Details</th>
               </tr>
             </thead>
             <tbody>
               {traceabilityData.map((item) => (
-                <tr key={item.component} className="border-b border-surface-100 hover:bg-surface-50">
+                <tr
+                  key={`${item.component}-${item.lot}-${item.received}`}
+                  className={`border-b border-surface-100 hover:bg-surface-50 ${
+                    isBlocked(item) ? 'bg-red-50/40' : ''
+                  }`}
+                >
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
                       <Layers className="w-4 h-4 text-surface-400" />
                       <span className="font-medium text-surface-900">{item.component}</span>
                     </div>
                   </td>
-                  <td className="py-3 px-4 text-surface-700">{item.supplier}</td>
                   <td className="py-3 px-4">
-                    <span className="font-mono text-sm text-surface-600">{item.batch}</span>
+                    <span className="font-mono text-sm text-surface-600">
+                      {item.lot || <span className="text-surface-300">—</span>}
+                    </span>
                   </td>
                   <td className="py-3 px-4">
-                    {item.inspected ? (
-                      <span className="badge badge-success">Inspected</span>
-                    ) : (
-                      <span className="badge badge-warning">Pending</span>
-                    )}
+                    <span className="font-mono text-sm text-surface-600">
+                      {item.certificate || <span className="text-surface-300">—</span>}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-surface-700">{item.received}</td>
+                  <td className="py-3 px-4 text-right font-mono text-sm text-surface-700">
+                    {item.qty.toLocaleString()}
                   </td>
                   <td className="py-3 px-4">
-                    {item.passed === true && <span className="badge badge-success">Passed</span>}
-                    {item.passed === false && (
-                      <span className="badge badge-critical">Failed</span>
-                    )}
-                    {item.passed === null && <span className="badge">-</span>}
-                  </td>
-                  <td className="py-3 px-4">
-                    {item.passed === false && item.failureDetails && (
-                      <button
-                        onClick={() => setSelectedItem(item)}
-                        className="flex items-center gap-1 text-sm text-primary-600 hover:text-primary-700 font-medium"
-                      >
-                        <Info className="w-4 h-4" />
-                        View Details
-                      </button>
-                    )}
+                    <span className={`badge ${isBlocked(item) ? 'badge-critical' : 'badge-success'}`}>
+                      {item.blockLabel}
+                    </span>
                   </td>
                 </tr>
               ))}
@@ -293,142 +304,77 @@ export default function ProductDT() {
           </table>
         </div>
         )}
+
+        {/* KAM — Receipt Inspection. Rakamlar Receipts.xlsx'ten OLCULDU. */}
+        {layout.isVisible('receipt-inspection') && (
+        <div className="bg-white rounded-xl shadow-card p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h3 className="font-semibold text-surface-900">Receipt Inspection</h3>
+              <HelpPopover
+                text="Goods receipt control per part: how much arrived, how much was inspected, and how much was scrapped or returned. KAM does not keep lot numbers, so incoming material is tracked by quantity rather than by batch."
+                linkTo="/help"
+                linkLabel="Product DT guide"
+                position="bottom-left"
+              />
+            </div>
+            <span className="text-xs text-surface-400">999 receipts · 150 parts</span>
+          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-surface-200">
+                <th className="text-left py-3 px-4 text-sm font-medium text-surface-600">Part</th>
+                <th className="text-right py-3 px-4 text-sm font-medium text-surface-600">Arrived</th>
+                <th className="text-right py-3 px-4 text-sm font-medium text-surface-600">Inspected</th>
+                <th className="text-right py-3 px-4 text-sm font-medium text-surface-600">Scrapped</th>
+                <th className="text-right py-3 px-4 text-sm font-medium text-surface-600">Returned</th>
+              </tr>
+            </thead>
+            <tbody>
+              {receiptInspectionData.map((item) => {
+                const flagged = item.scrapped > 0 || item.returned > 0;
+                return (
+                  <tr
+                    key={item.part}
+                    className={`border-b border-surface-100 hover:bg-surface-50 ${
+                      flagged ? 'bg-amber-50/40' : ''
+                    }`}
+                  >
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-surface-400" />
+                        <div>
+                          <div className="font-medium text-surface-900">{item.part}</div>
+                          <div className="text-xs text-surface-500">{item.description}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 text-right font-mono text-sm text-surface-700">
+                      {item.arrived.toLocaleString()}
+                    </td>
+                    <td className="py-3 px-4 text-right font-mono text-sm text-surface-700">
+                      {item.inspected ? item.inspected.toLocaleString() : <span className="text-surface-300">—</span>}
+                    </td>
+                    <td className={`py-3 px-4 text-right font-mono text-sm ${item.scrapped ? 'text-red-600 font-semibold' : 'text-surface-400'}`}>
+                      {item.scrapped ? item.scrapped.toLocaleString() : '—'}
+                    </td>
+                    <td className={`py-3 px-4 text-right font-mono text-sm ${item.returned ? 'text-amber-600 font-semibold' : 'text-surface-400'}`}>
+                      {item.returned ? item.returned.toLocaleString() : '—'}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <p className="mt-3 font-mono text-xs text-surface-400">
+            KAM · Receipts.xlsx — Part No / Arrived Qty / Inspected Qty / Scrapped Qty / Returned Qty · 999 receipts · measured 2026-08-31
+          </p>
+        </div>
+        )}
+
       </div>
 
 
-      {selectedItem && selectedItem.failureDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between p-5 border-b border-surface-200">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <AlertTriangle className="w-5 h-5 text-red-600" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-surface-900">Inspection Failure Details</h3>
-                  <p className="text-sm text-surface-600">
-                    {selectedItem.component} - {selectedItem.batch}
-                  </p>
-                </div>
-              </div>
-              <TooltipUI content="Close">
-                <button
-                  onClick={() => setSelectedItem(null)}
-                  className="p-2 hover:bg-surface-100 rounded-lg transition-colors"
-                >
-                  <X className="w-5 h-5 text-surface-600" />
-                </button>
-              </TooltipUI>
-            </div>
-
-            <div className="flex-1 overflow-y-auto p-5">
-              <div className="space-y-4">
-                <div>
-                  <label className="text-xs font-medium text-surface-500 uppercase tracking-wide">
-                    Failure Reason
-                  </label>
-                  <p className="text-lg font-medium text-red-600 mt-1">
-                    {selectedItem.failureReason}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-xs font-medium text-surface-500 uppercase tracking-wide">
-                      Defect Type
-                    </label>
-                    <p className="text-sm text-surface-900 mt-1 font-medium">
-                      {selectedItem.failureDetails.defectType}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-surface-500 uppercase tracking-wide">
-                      Severity
-                    </label>
-                    <span className={`inline-block mt-1 px-2 py-1 rounded text-xs font-medium ${
-                      selectedItem.failureDetails.severity === 'Critical' ? 'bg-red-100 text-red-800' :
-                      selectedItem.failureDetails.severity === 'Major' ? 'bg-amber-100 text-amber-800' :
-                      'bg-blue-100 text-blue-800'
-                    }`}>
-                      {selectedItem.failureDetails.severity}
-                    </span>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-surface-500 uppercase tracking-wide">
-                      Inspector
-                    </label>
-                    <p className="text-sm text-surface-900 mt-1">
-                      {selectedItem.failureDetails.inspector}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-surface-500 uppercase tracking-wide">
-                      Inspection Time
-                    </label>
-                    <p className="text-sm text-surface-900 mt-1 font-mono">
-                      {selectedItem.failureDetails.timestamp}
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-medium text-surface-500 uppercase tracking-wide">
-                    Supplier Information
-                  </label>
-                  <div className="mt-2 p-3 bg-surface-50 rounded-lg">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-surface-600">Supplier Name</span>
-                      <span className="text-sm font-medium text-surface-900">{selectedItem.supplier}</span>
-                    </div>
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-sm text-surface-600">Batch Number</span>
-                      <span className="text-sm font-mono text-surface-900">{selectedItem.batch}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {selectedItem.failureDetails.images && (
-                  <div>
-                    <label className="text-xs font-medium text-surface-500 uppercase tracking-wide">
-                      Documentation
-                    </label>
-                    <div className="mt-2 flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <FileText className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm text-blue-900">
-                        {selectedItem.failureDetails.images} inspection images available
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                <div>
-                  <label className="text-xs font-medium text-surface-500 uppercase tracking-wide">
-                    Corrective Action
-                  </label>
-                  <p className="text-sm text-surface-900 mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg leading-relaxed">
-                    {selectedItem.failureDetails.correctionAction}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end gap-3 p-5 border-t border-surface-200 bg-surface-50">
-              <button
-                onClick={() => setSelectedItem(null)}
-                className="px-4 py-2 text-sm font-medium text-surface-700 bg-white border border-surface-300 rounded-lg hover:bg-surface-50 transition-colors"
-              >
-                Close
-              </button>
-              <button className="px-4 py-2 text-sm font-medium text-white bg-primary-500 rounded-lg hover:bg-primary-600 transition-colors">
-                Generate Report
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

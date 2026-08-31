@@ -1,8 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  BarChart,
-  Bar,
   LineChart,
   Line,
   XAxis,
@@ -11,9 +9,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
   LabelList,
 } from 'recharts';
 import { Activity, TrendingUp, AlertTriangle, Clock } from 'lucide-react';
@@ -22,22 +17,20 @@ import FilterBar from '../components/shared/FilterBar';
 import KpiCard from '../components/shared/KpiCard';
 import AlertCard from '../components/shared/AlertCard';
 import { TaskListWidget } from '../components/shared/HITLValidation';
-import { dashboardKpis, recentAlerts, productionTrendData, mudaData, hitlValidationTasks } from '../data/mockData';
+import { dashboardKpis, productionTrendData, hitlValidationTasks } from '../data/mockData';
+import { getCompanyAlerts } from '../data/alerts';
+import { useCompany } from '../contexts/CompanyContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useRole } from '../contexts/RoleContext';
 import { useToast } from '../contexts/ToastContext';
 import { useAccessibility } from '../contexts/AccessibilityContext';
 import { usePageLayout } from '../hooks/usePageLayout';
 
-const MUDA_COLORS = ['#ef4444', '#f59e0b', '#3b82f6', '#8b5cf6', '#ec4899', '#10b981', '#06b6d4'];
-const MUDA_PATTERN_IDS = ['muda-stripe', 'muda-dots', 'muda-crosshatch', 'muda-diagonal', 'muda-diamond', 'muda-horizontal', 'muda-zigzag'];
 
 const WIDGET_SIZES: Record<string, 'small' | 'medium' | 'large'> = {
   'quick-stats': 'large',
   'kpi-primary': 'large',
   'production-trend': 'large',
-  'muda-analysis': 'medium',
-  'waste-reduction': 'large',
   'alerts': 'medium',
   'hitl-tasks': 'medium',
   'kpi-secondary': 'large',
@@ -56,6 +49,8 @@ export default function Dashboard() {
   const location = useLocation();
   const navigate = useNavigate();
   const isLite = a11y.liteMode;
+  const { company } = useCompany();
+  const recentAlerts = getCompanyAlerts(company);
   const criticalAlerts = recentAlerts.filter(a => a.severity === 'critical' && !a.acknowledged);
 
   useEffect(() => {
@@ -197,189 +192,6 @@ export default function Dashboard() {
           </div>
         );
 
-      case 'muda-analysis':
-        if (isLite) return (
-          <div className="bg-white rounded-xl shadow-card p-4 lg:p-5">
-            <h3 className="font-semibold text-surface-900 mb-2">MUDA Analysis</h3>
-            <p className="text-sm text-surface-500">Detailed MUDA analysis is hidden in Lite Mode for simplicity. Switch to Standard Mode to view the full breakdown.</p>
-          </div>
-        );
-        return (
-          <div className="bg-white rounded-xl shadow-card p-4 lg:p-5 overflow-hidden">
-            <div className="flex items-center justify-between mb-4 relative">
-              <h3 className="font-semibold text-surface-900">MUDA Analysis</h3>
-            </div>
-            <div className="h-64 lg:h-72 overflow-hidden">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart margin={{ top: 0, right: 0, bottom: 0, left: 0 }}>
-                  <defs>
-                    {MUDA_COLORS.map((color, i) => {
-                      const patternId = MUDA_PATTERN_IDS[i];
-                      if (i === 0) return (
-                        <pattern key={patternId} id={patternId} patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
-                          <rect width="6" height="6" fill={color} />
-                          <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
-                        </pattern>
-                      );
-                      if (i === 1) return (
-                        <pattern key={patternId} id={patternId} patternUnits="userSpaceOnUse" width="6" height="6">
-                          <rect width="6" height="6" fill={color} />
-                          <circle cx="3" cy="3" r="1.5" fill="rgba(255,255,255,0.4)" />
-                        </pattern>
-                      );
-                      if (i === 2) return (
-                        <pattern key={patternId} id={patternId} patternUnits="userSpaceOnUse" width="8" height="8">
-                          <rect width="8" height="8" fill={color} />
-                          <path d="M0,0 L8,8 M8,0 L0,8" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
-                        </pattern>
-                      );
-                      if (i === 3) return (
-                        <pattern key={patternId} id={patternId} patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(-45)">
-                          <rect width="6" height="6" fill={color} />
-                          <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
-                        </pattern>
-                      );
-                      if (i === 4) return (
-                        <pattern key={patternId} id={patternId} patternUnits="userSpaceOnUse" width="8" height="8">
-                          <rect width="8" height="8" fill={color} />
-                          <rect x="2" y="2" width="4" height="4" fill="rgba(255,255,255,0.3)" transform="rotate(45,4,4)" />
-                        </pattern>
-                      );
-                      if (i === 5) return (
-                        <pattern key={patternId} id={patternId} patternUnits="userSpaceOnUse" width="6" height="6">
-                          <rect width="6" height="6" fill={color} />
-                          <line x1="0" y1="3" x2="6" y2="3" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
-                        </pattern>
-                      );
-                      return (
-                        <pattern key={patternId} id={patternId} patternUnits="userSpaceOnUse" width="8" height="4">
-                          <rect width="8" height="4" fill={color} />
-                          <polyline points="0,4 4,0 8,4" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" />
-                        </pattern>
-                      );
-                    })}
-                  </defs>
-                  <Pie
-                    data={mudaData}
-                    cx="50%"
-                    cy="40%"
-                    innerRadius={40}
-                    outerRadius={65}
-                    paddingAngle={2}
-                    dataKey="value"
-                    nameKey="category"
-                    label={({ cx, cy, midAngle, outerRadius: oR, category, value }: { cx: number; cy: number; midAngle: number; outerRadius: number; category: string; value: number }) => {
-                      const RADIAN = Math.PI / 180;
-                      const radius = oR + 18;
-                      const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                      const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                      return (
-                        <text
-                          x={x}
-                          y={y}
-                          textAnchor={x > cx ? 'start' : 'end'}
-                          dominantBaseline="central"
-                          fontSize={9}
-                          fill="#525252"
-                        >
-                          {category} ({value})
-                        </text>
-                      );
-                    }}
-                  >
-                    {mudaData.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={`url(#${MUDA_PATTERN_IDS[index % MUDA_PATTERN_IDS.length]})`}
-                        strokeWidth={2}
-                        stroke="#fff"
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '8px',
-                      fontSize: '12px',
-                    }}
-                  />
-                  <Legend
-                    layout="horizontal"
-                    align="center"
-                    verticalAlign="bottom"
-                    wrapperStyle={{ fontSize: '10px', paddingTop: '8px' }}
-                    formatter={(value: string, entry: { color?: string }, index: number) => (
-                      <span style={{ color: '#525252' }}>
-                        <span
-                          style={{
-                            display: 'inline-block',
-                            width: 10,
-                            height: 10,
-                            backgroundColor: MUDA_COLORS[index % MUDA_COLORS.length],
-                            marginRight: 4,
-                            borderRadius: 2,
-                          }}
-                        />
-                        {value}
-                      </span>
-                    )}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        );
-
-      case 'waste-reduction':
-        if (isLite) return (
-          <div className="bg-white rounded-xl shadow-card p-4 lg:p-5">
-            <h3 className="font-semibold text-surface-900 mb-2">Waste Reduction</h3>
-            <p className="text-sm text-surface-500">Waste reduction details are hidden in Lite Mode. Switch to Standard Mode for the full view.</p>
-          </div>
-        );
-        return (
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-card p-4 lg:p-5 overflow-hidden">
-            <div className="flex items-center justify-between mb-4 relative">
-              <h3 className="font-semibold text-surface-900">Waste Reduction Progress</h3>
-            </div>
-            <div className="h-64 lg:h-72 overflow-hidden">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={mudaData} layout="vertical" margin={{ top: 5, right: 40, bottom: 5, left: 10 }}>
-                  <defs>
-                    <pattern id="stripe-current" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
-                      <rect width="6" height="6" fill="#ef4444" />
-                      <line x1="0" y1="0" x2="0" y2="6" stroke="#dc2626" strokeWidth="2" />
-                    </pattern>
-                    <pattern id="stripe-target" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(-45)">
-                      <rect width="6" height="6" fill="#10b981" />
-                      <line x1="0" y1="0" x2="0" y2="6" stroke="#059669" strokeWidth="2" />
-                    </pattern>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" horizontal={true} vertical={false} />
-                  <XAxis type="number" tick={{ fontSize: 12 }} stroke="#737373" />
-                  <YAxis dataKey="category" type="category" tick={{ fontSize: 10 }} stroke="#737373" width={85} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'white',
-                      border: '1px solid #e5e5e5',
-                      borderRadius: '8px',
-                      fontSize: '12px',
-                    }}
-                  />
-                  <Legend />
-                  <Bar dataKey="value" fill="url(#stripe-current)" name="Current" radius={[0, 4, 4, 0]} stroke="#ef4444" strokeWidth={1}>
-                    <LabelList dataKey="value" position="right" fontSize={10} fill="#525252" />
-                  </Bar>
-                  <Bar dataKey="target" fill="url(#stripe-target)" name="Target" radius={[0, 4, 4, 0]} stroke="#10b981" strokeWidth={1}>
-                    <LabelList dataKey="target" position="right" fontSize={10} fill="#525252" />
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        );
-
       case 'alerts':
         return (
           <div className="bg-white rounded-xl shadow-card p-4 lg:p-5 overflow-hidden flex flex-col max-h-96">
@@ -428,7 +240,7 @@ export default function Dashboard() {
   };
 
   const fullWidthIds = new Set(['quick-stats', 'kpi-primary', 'kpi-secondary']);
-  const chartPairIds = new Set(['production-trend', 'muda-analysis', 'waste-reduction', 'alerts', 'hitl-tasks']);
+  const chartPairIds = new Set(['production-trend', 'alerts']);
 
   const renderDynamicWidgets = () => {
     const elements: React.ReactNode[] = [];

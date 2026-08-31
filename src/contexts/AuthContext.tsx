@@ -96,6 +96,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     localStorage.removeItem(SESSION_KEY);
     setCurrentUser(null);
+    // Adresi koke al: cikista URL oldugu yerde kalirsa (ornegin /admin)
+    // bir sonraki kullanici o sayfada baslar. AuthProvider BrowserRouter'in
+    // disinda oldugu icin useNavigate kullanilamaz; router zaten cikista
+    // sokuluyor, girise donuldugunde window.location'dan yeniden kuruluyor.
+    // Isıl karari 2026-08-31.
+    window.history.replaceState(null, '', '/');
   }, []);
 
   const createUser = useCallback(

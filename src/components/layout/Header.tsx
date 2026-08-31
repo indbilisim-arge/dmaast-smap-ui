@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bell, Search, ChevronDown, RefreshCw, Globe2, ClipboardCheck } from 'lucide-react';
+import { Bell, Search, ChevronDown, RefreshCw, Globe2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { recentAlerts, hitlValidationTasks } from '../../data/mockData';
+import { getCompanyAlerts } from '../../data/alerts';
+import { useCompany } from '../../contexts/CompanyContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import SystemStatus from '../shared/SystemStatus';
 import Tooltip from '../shared/Tooltip';
@@ -27,8 +28,8 @@ export default function Header({ title, subtitle }: HeaderProps) {
   const languageDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
-  const unacknowledgedAlerts = recentAlerts.filter(a => !a.acknowledged).length;
-  const pendingHitlTasks = hitlValidationTasks.filter(t => t.status === 'pending').length;
+  const { company } = useCompany();
+  const unacknowledgedAlerts = getCompanyAlerts(company).filter(a => !a.acknowledged).length;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -99,21 +100,6 @@ export default function Header({ title, subtitle }: HeaderProps) {
               </div>
             )}
           </div>
-
-          <Tooltip content={`HITL Validation Tasks (${pendingHitlTasks} pending)`} position="bottom">
-            <button
-              onClick={() => navigate('/')}
-              className="p-2 text-surface-500 hover:text-surface-700 hover:bg-surface-100 rounded-lg transition-colors relative"
-              aria-label="HITL validation tasks"
-            >
-              <ClipboardCheck className="w-5 h-5" />
-              {pendingHitlTasks > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-white text-xs rounded-full flex items-center justify-center">
-                  {pendingHitlTasks}
-                </span>
-              )}
-            </button>
-          </Tooltip>
 
           <Tooltip content={t('header.refresh')} position="bottom">
             <button

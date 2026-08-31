@@ -23,6 +23,7 @@ import AlertCenter from './pages/AlertCenter';
 import HelpCenter from './pages/HelpCenter';
 import TerminologyDictionary from './pages/TerminologyDictionary';
 import OnboardingTour from './components/shared/OnboardingTour';
+import AdminTour from './components/shared/AdminTour';
 import QuickAccess from './components/shared/QuickAccess';
 
 /**
@@ -41,10 +42,20 @@ function AuthenticatedApp() {
     <CompanyProvider key={currentUser.username} company={currentUser.company}>
       <RoleProvider initialRole={currentUser.role}>
         <BrowserRouter>
-          <OnboardingTour />
+          {/* Admin panel disina cikamaz — turu da kendi paneline ait olan. Isıl karari 2026-08-31 */}
+          {currentUser.isAdmin ? <AdminTour /> : <OnboardingTour />}
           <Routes>
-            {/* Admin paneli — firma kapsamli, kendi disinda gezinme yok */}
-            <Route path="/admin" element={<AdminPanel />} />
+            {/*
+              Admin paneli — firma kapsamli, kendi disinda gezinme yok.
+              isAdmin kapisi: admin olmayan bir kullanici /admin adresine
+              duserse panele giremez, koke atilir. Isıl karari 2026-08-31 —
+              cikis sonrasi adres /admin'de kaldigi icin bir sonraki
+              (admin olmayan) kullanici panele dusuyordu.
+            */}
+            <Route
+              path="/admin"
+              element={currentUser.isAdmin ? <AdminPanel /> : <Navigate to="/" replace />}
+            />
 
             <Route path="/" element={<Layout />}>
               <Route

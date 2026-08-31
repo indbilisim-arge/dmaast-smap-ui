@@ -68,19 +68,26 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
       { id: 'quick-stats', title: 'Quick Stats', type: 'widget' },
       { id: 'kpi-primary', title: 'Primary KPIs', type: 'widget' },
       { id: 'production-trend', title: 'Production Trend', type: 'widget' },
-      { id: 'muda-analysis', title: 'MUDA Analysis', type: 'widget' },
-      { id: 'waste-reduction', title: 'Waste Reduction', type: 'widget' },
+      // CIKARILDI 2026-08-31 (Isil): muda-analysis · waste-reduction.
+      //   Gerekce: KPI tablolarinda karsiliklari YOK. MUDA'nin 7 kategorisinden
+      //   yalniz JPB 'Waiting time' tanimli; Transport/Motion/Overprocessing
+      //   hicbir tabloda ve hicbir veri setinde yok. Atik azaltma gostergesi de yok.
+      //   Denetim: work/smap-arayuz/02-kpi-veri-kaynagi-denetimi.md
       { id: 'alerts', title: 'Recent Alerts', type: 'widget' },
-      { id: 'hitl-tasks', title: 'Validation Tasks', type: 'widget' },
+      // GIZLENDI 2026-08-31 (Isil): 4 dogrulama gorevi elle uydurulmustu ve
+      //   ikisi olmayan veriye dayaniyordu (M-102 sensor okumasi, C-445 emniyet
+      //   stogu). Widget SILINMEDI — Isil'in tarifiyle "survey" olarak yeniden
+      //   kurulacak; tasarim gelince bu satir geri acilir.
+      // { id: 'hitl-tasks', title: 'Validation Tasks', type: 'widget' },
       { id: 'kpi-secondary', title: 'Secondary KPIs', type: 'widget' },
     ],
     roleDefaults: {
-      manager: ['quick-stats', 'kpi-primary', 'production-trend', 'muda-analysis', 'waste-reduction', 'alerts', 'hitl-tasks', 'kpi-secondary'],
-      engineer: ['quick-stats', 'kpi-primary', 'production-trend', 'waste-reduction', 'hitl-tasks', 'kpi-secondary'],
-      operator: ['quick-stats', 'alerts', 'hitl-tasks'],
-      admin: ['quick-stats', 'kpi-primary', 'production-trend', 'muda-analysis', 'waste-reduction', 'alerts', 'hitl-tasks', 'kpi-secondary'],
-      developer: ['quick-stats', 'kpi-primary', 'production-trend', 'hitl-tasks'],
-      superuser: ['quick-stats', 'kpi-primary', 'production-trend', 'muda-analysis', 'waste-reduction', 'alerts', 'hitl-tasks', 'kpi-secondary'],
+      manager: ['quick-stats', 'kpi-primary', 'production-trend', 'alerts', 'kpi-secondary'],
+      engineer: ['quick-stats', 'kpi-primary', 'production-trend', 'kpi-secondary'],
+      operator: ['quick-stats', 'alerts'],
+      admin: ['quick-stats', 'kpi-primary', 'production-trend', 'alerts', 'kpi-secondary'],
+      developer: ['quick-stats', 'kpi-primary', 'production-trend'],
+      superuser: ['quick-stats', 'kpi-primary', 'production-trend', 'alerts', 'kpi-secondary'],
     },
   },
   'value-chain': {
@@ -111,7 +118,8 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
     pageId: 'manufacturing',
     label: 'Manufacturing',
     // Işıl onayi 2026-08-30 — masterdata MON + usable% ile secildi.
-    // CIKARILDI: equipment-availability · oee · oee-breakdown · machine-status
+    // CIKARILDI: equipment-availability · oee (tekil kart)  —  oee-breakdown ve
+    //   machine-status 2026-08-31'de GERI ALINDI (unit_states / PackML).
     //   (makine kimligi ve durus iki firmada da yok: KAM 'Machine No' %0,
     //    JPB 'CAPEMPR' 244.290 satirda hep 0, 'Machine_Capacity' FILLED BUT ALL ZERO)
     // CIKARILDI: energy-per-unit (enerji alani yok) · what-if-panel (simulasyon, kapsam disi)
@@ -128,17 +136,22 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
       // KAM: Shop Order Material Summary Status — OLCULDU tekil=3 (760 Completely Issued /
       // 208 Partially Issued / 2 Not Reserved). Shop_Order_Status ve Operation_Status
       // usable %100 gorunuyor ama TEKIL=1 (hepsi Closed / Completely Reported) — bilgi tasimiyor.
+      // GERI ALINDI 2026-08-31 (Isil): unit_states (PackML) Availability'yi sagliyor;
+      //   OEE'yi KAM'da koordinator (IDE), JPB'de JPB kendisi KPI tablosuna eklemis.
+      //   Kartlar DEGER gostermiyor — her bacagin kaynagini ve bagli olup olmadigini gosteriyor.
+      { id: 'oee-breakdown', title: 'OEE Breakdown', type: 'card' },
+      { id: 'machine-status', title: 'Machine Status', type: 'card' },
       { id: 'material-readiness', title: 'Material Readiness', type: 'card', scope: 'kam' },
       // JPB: Actual 97.7% ↔ Estimated (GA_NBH) 26.7%
       { id: 'actual-vs-planned-hours', title: 'Actual vs Planned Hours', type: 'card', scope: 'jpb' },
     ],
     roleDefaults: {
-      manager: ['production-throughput', 'yield-rate', 'defect-rate', 'completion-rate', 'production-output', 'material-readiness', 'cycle-time-analysis'],
-      engineer: ['production-throughput', 'yield-rate', 'defect-rate', 'cost-efficiency', 'completion-rate', 'production-output', 'cycle-time-analysis', 'material-readiness', 'actual-vs-planned-hours'],
-      operator: ['production-throughput', 'yield-rate', 'production-output', 'material-readiness'],
-      admin: ['production-throughput', 'yield-rate', 'defect-rate', 'cost-efficiency', 'completion-rate', 'production-output', 'cycle-time-analysis', 'material-readiness', 'actual-vs-planned-hours'],
-      developer: ['production-throughput', 'yield-rate', 'production-output', 'cycle-time-analysis', 'material-readiness'],
-      superuser: ['production-throughput', 'yield-rate', 'defect-rate', 'cost-efficiency', 'completion-rate', 'production-output', 'cycle-time-analysis', 'material-readiness', 'actual-vs-planned-hours'],
+      manager: ['production-throughput', 'yield-rate', 'defect-rate', 'completion-rate', 'production-output', 'oee-breakdown', 'machine-status', 'material-readiness', 'cycle-time-analysis'],
+      engineer: ['production-throughput', 'yield-rate', 'defect-rate', 'cost-efficiency', 'completion-rate', 'production-output', 'oee-breakdown', 'machine-status', 'cycle-time-analysis', 'material-readiness', 'actual-vs-planned-hours'],
+      operator: ['production-throughput', 'yield-rate', 'production-output', 'oee-breakdown', 'machine-status', 'material-readiness'],
+      admin: ['production-throughput', 'yield-rate', 'defect-rate', 'cost-efficiency', 'completion-rate', 'production-output', 'oee-breakdown', 'machine-status', 'cycle-time-analysis', 'material-readiness', 'actual-vs-planned-hours'],
+      developer: ['production-throughput', 'yield-rate', 'production-output', 'oee-breakdown', 'machine-status', 'cycle-time-analysis', 'material-readiness'],
+      superuser: ['production-throughput', 'yield-rate', 'defect-rate', 'cost-efficiency', 'completion-rate', 'production-output', 'oee-breakdown', 'machine-status', 'cycle-time-analysis', 'material-readiness', 'actual-vs-planned-hours'],
     },
   },
   logistics: {
@@ -154,7 +167,7 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
       // JPB: Actual_Ship_Date yalniz 3.9%, DUREETRANS OLCULDU = %0 bos -> JPB'de yok
       { id: 'avg-transit-time', title: 'Avg Transit Time', type: 'kpi', scope: 'kam' },
       // KAM: Ship_Delay_Days usable 100%
-      { id: 'ship-delay-days', title: 'Ship Delay Days', type: 'kpi', scope: 'kam' },
+      { id: 'late-delivery-rate', title: 'Late Delivery Rate', type: 'kpi', scope: 'kam' },
       // JPB: Dispatch_Conformity_Check (BLCOCCheck) usable 81.1%
       { id: 'dispatch-conformity', title: 'Dispatch Conformity Check', type: 'kpi', scope: 'jpb' },
       { id: 'shipment-stats', title: 'Shipment Status Cards', type: 'card' },
@@ -163,12 +176,12 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
       { id: 'active-shipments', title: 'Active Shipments', type: 'card', scope: 'kam' },
     ],
     roleDefaults: {
-      manager: ['delivery-accuracy', 'lead-time', 'avg-transit-time', 'ship-delay-days', 'dispatch-conformity', 'shipment-stats', 'volume-trend', 'active-shipments'],
-      engineer: ['delivery-accuracy', 'lead-time', 'inventory-turnover', 'avg-transit-time', 'ship-delay-days', 'dispatch-conformity', 'shipment-stats', 'volume-trend', 'active-shipments'],
+      manager: ['delivery-accuracy', 'lead-time', 'avg-transit-time', 'late-delivery-rate', 'dispatch-conformity', 'shipment-stats', 'volume-trend', 'active-shipments'],
+      engineer: ['delivery-accuracy', 'lead-time', 'inventory-turnover', 'avg-transit-time', 'late-delivery-rate', 'dispatch-conformity', 'shipment-stats', 'volume-trend', 'active-shipments'],
       operator: ['delivery-accuracy', 'avg-transit-time', 'dispatch-conformity', 'shipment-stats', 'active-shipments'],
-      admin: ['delivery-accuracy', 'lead-time', 'inventory-turnover', 'avg-transit-time', 'ship-delay-days', 'dispatch-conformity', 'shipment-stats', 'volume-trend', 'active-shipments'],
+      admin: ['delivery-accuracy', 'lead-time', 'inventory-turnover', 'avg-transit-time', 'late-delivery-rate', 'dispatch-conformity', 'shipment-stats', 'volume-trend', 'active-shipments'],
       developer: ['delivery-accuracy', 'lead-time', 'shipment-stats', 'volume-trend', 'active-shipments'],
-      superuser: ['delivery-accuracy', 'lead-time', 'inventory-turnover', 'avg-transit-time', 'ship-delay-days', 'dispatch-conformity', 'shipment-stats', 'volume-trend', 'active-shipments'],
+      superuser: ['delivery-accuracy', 'lead-time', 'inventory-turnover', 'avg-transit-time', 'late-delivery-rate', 'dispatch-conformity', 'shipment-stats', 'volume-trend', 'active-shipments'],
     },
   },
   product: {
@@ -191,15 +204,20 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
       // JPB: TBL_CtrlCommande TypeDefaut/Defaut/Resolution — KAM'da hata TIPI yok, yalniz adet
       { id: 'defect-distribution', title: 'Defect Distribution', type: 'card', scope: 'jpb' },
       { id: 'product-variants', title: 'Product Variants Performance', type: 'card' },
-      { id: 'component-traceability', title: 'Component Traceability', type: 'card' },
+      // JPB: TBL_LOTIE — LOT %99,4 · CERTIF %28,1 · DATEREC/BLOCAGE/QTE %100.
+      //   KAM parti (lot) tutmuyor, bu tabloda tedarikci kolonu da yok
+      //   -> ayni kart KAM'da kurulamaz (Isil karari 2026-08-31).
+      { id: 'component-traceability', title: 'Component Traceability', type: 'card', scope: 'jpb' },
+      // KAM karsiligi AYRI yapi: Receipts.xlsx, 999 kabul / 150 parca, bes kolon da %100 dolu.
+      { id: 'receipt-inspection', title: 'Receipt Inspection', type: 'card', scope: 'kam' },
     ],
     roleDefaults: {
-      manager: ['yield-rate', 'defect-rate', 'first-pass-yield', 'rework-rate', 'quality-hold-rate', 'inspection-coverage', 'quality-trend', 'defect-distribution', 'product-variants', 'component-traceability'],
-      engineer: ['yield-rate', 'defect-rate', 'production-throughput', 'first-pass-yield', 'rework-rate', 'quality-hold-rate', 'inspection-coverage', 'quality-trend', 'defect-distribution', 'product-variants', 'component-traceability'],
-      operator: ['yield-rate', 'defect-rate', 'first-pass-yield', 'rework-rate', 'product-variants', 'component-traceability'],
-      admin: ['yield-rate', 'defect-rate', 'production-throughput', 'first-pass-yield', 'rework-rate', 'quality-hold-rate', 'inspection-coverage', 'quality-trend', 'defect-distribution', 'product-variants', 'component-traceability'],
-      developer: ['yield-rate', 'defect-rate', 'first-pass-yield', 'rework-rate', 'product-variants', 'component-traceability'],
-      superuser: ['yield-rate', 'defect-rate', 'production-throughput', 'first-pass-yield', 'rework-rate', 'quality-hold-rate', 'inspection-coverage', 'quality-trend', 'defect-distribution', 'product-variants', 'component-traceability'],
+      manager: ['yield-rate', 'defect-rate', 'first-pass-yield', 'rework-rate', 'quality-hold-rate', 'inspection-coverage', 'quality-trend', 'defect-distribution', 'product-variants', 'component-traceability', 'receipt-inspection'],
+      engineer: ['yield-rate', 'defect-rate', 'production-throughput', 'first-pass-yield', 'rework-rate', 'quality-hold-rate', 'inspection-coverage', 'quality-trend', 'defect-distribution', 'product-variants', 'component-traceability', 'receipt-inspection'],
+      operator: ['yield-rate', 'defect-rate', 'first-pass-yield', 'rework-rate', 'product-variants', 'component-traceability', 'receipt-inspection'],
+      admin: ['yield-rate', 'defect-rate', 'production-throughput', 'first-pass-yield', 'rework-rate', 'quality-hold-rate', 'inspection-coverage', 'quality-trend', 'defect-distribution', 'product-variants', 'component-traceability', 'receipt-inspection'],
+      developer: ['yield-rate', 'defect-rate', 'first-pass-yield', 'rework-rate', 'product-variants', 'component-traceability', 'receipt-inspection'],
+      superuser: ['yield-rate', 'defect-rate', 'production-throughput', 'first-pass-yield', 'rework-rate', 'quality-hold-rate', 'inspection-coverage', 'quality-trend', 'defect-distribution', 'product-variants', 'component-traceability', 'receipt-inspection'],
     },
   },
   // PLANNED — Işıl kararı (2026-08-30): sayfa "planned" işaretiyle boş bırakıldı.
@@ -315,17 +333,28 @@ const PAGE_LOCAL_KPIS: Record<string, KpiData> = {
     dataSource: 'JPB · CALCULATED max(NBPIE per NAF) / QTEFAB — usable 99.9%',
     sparklineData: [91.2, 92.0, 92.8, 93.1, 93.9, 94.2, 94.4, 94.6],
   },
-  'ship-delay-days': {
-    id: 'ship-delay-days',
-    label: 'Ship Delay Days',
-    value: 1.4,
-    unit: 'days',
-    trend: -0.3,
-    target: 0,
+  /*
+   * 2026-08-31 — 'late-delivery-rate' bu karta donustu (Isıl onayi).
+   * ESKI HALI DAYANAKSIZDI: Shipments.xlsx icinde 'Actual Ship Date',
+   * 'Planned Ship Date/Time' kolonunun 359 satirin 359'unda saniyesi
+   * saniyesine KOPYASI. Fark her zaman sifir; kart 1.4 gun gosteremezdi.
+   * "usable 100%" dogruydu ama anlamsizdi (4. veri durumu).
+   * Dogru kaynak Ext Customer Order Lines: soz verilen teslim tarihi ile
+   * gerceklesen sevk tarihi. Olcum 2026-08-31.
+   */
+  'late-delivery-rate': {
+    id: 'late-delivery-rate',
+    label: 'Late Delivery Rate',
+    value: 13.4,
+    unit: '%',
+    trend: -0.8,
+    target: 5,
     cluster: 'delivery',
-    definition: 'Actual ship date against the planned ship date.',
-    dataSource: 'KAM · Shipments (Actual - Planned Ship Date) — usable 100%',
-    sparklineData: [2.2, 2.0, 1.9, 1.8, 1.6, 1.5, 1.4, 1.4],
+    definition:
+      'Share of order lines shipped after the promised delivery date. Lower bound: the data has no actual delivery date, so transit time is not counted — real lateness can only be higher.',
+    dataSource:
+      'KAM · Ext Customer Order Lines — Promised Delivery Date/Time vs Last Actual Ship Date · 84 of 626 lines late · avg 3.7 d, max 36 d · measured 2026-08-31',
+    sparklineData: [16.1, 15.7, 15.2, 14.8, 14.3, 13.9, 13.6, 13.4],
   },
   'dispatch-conformity': {
     id: 'dispatch-conformity',
@@ -374,26 +403,11 @@ const PAGE_LOCAL_KPIS: Record<string, KpiData> = {
     cluster: 'delivery',
     sparklineData: [3.0, 2.8, 2.7, 2.6, 2.5, 2.4, 2.3, 2.3],
   },
-  'fleet-utilization': {
-    id: 'fleet-utilization',
-    label: 'Fleet Utilization',
-    value: 87.2,
-    unit: '%',
-    trend: 3.1,
-    target: 90,
-    cluster: 'cost',
-    sparklineData: [80, 82, 83, 84, 85, 86, 87, 87.2],
-  },
-  'transport-cost': {
-    id: 'transport-cost',
-    label: 'Transport Cost',
-    value: 12.4,
-    unit: '€/unit',
-    trend: -2.1,
-    target: 10,
-    cluster: 'cost',
-    sparklineData: [15, 14.5, 14, 13.5, 13, 12.8, 12.5, 12.4],
-  },
+  /* SAHIPSIZ TANIMLAR SILINDI — 2026-08-31 (Isil onayi).
+   * fleet-utilization · transport-cost · water-consumption · recycling-rate:
+   * hicbir sayfanin kayit defterinde yoktular (cizilmiyorlardi) ve KAM/JPB KPI
+   * tablolarinda da karsiliklari yok. Filo, tasima maliyeti, su ve geri donusum
+   * gostergesi iki firmanin verisinde de bulunmuyor. */
   'first-pass-yield': {
     id: 'first-pass-yield',
     label: 'First Pass Yield',
@@ -413,26 +427,6 @@ const PAGE_LOCAL_KPIS: Record<string, KpiData> = {
     target: 2.0,
     cluster: 'cost',
     sparklineData: [4.0, 3.5, 3.2, 3.0, 2.8, 2.6, 2.5, 2.4],
-  },
-  'water-consumption': {
-    id: 'water-consumption',
-    label: 'Water Consumption',
-    value: 18.5,
-    unit: 'L/unit',
-    trend: -5.2,
-    target: 15,
-    cluster: 'energy',
-    sparklineData: [22, 21, 20, 19.5, 19, 18.8, 18.6, 18.5],
-  },
-  'recycling-rate': {
-    id: 'recycling-rate',
-    label: 'Recycling Rate',
-    value: 78.4,
-    unit: '%',
-    trend: 4.8,
-    target: 85,
-    cluster: 'energy',
-    sparklineData: [68, 70, 72, 74, 75, 76, 77, 78.4],
   },
 };
 
