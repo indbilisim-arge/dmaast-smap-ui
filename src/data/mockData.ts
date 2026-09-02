@@ -1,4 +1,4 @@
-import type { KpiData, DigitalTwinNode, SimulationScenario } from '../types';
+import type { KpiData, DigitalTwinNode, SimulationScenario, HitlValidationTask } from '../types';
 
 export const dashboardKpis: KpiData[] = [
   {
@@ -306,7 +306,7 @@ export const energyConsumptionData = [
   { time: '20:00', line1: 55, line2: 48, line3: 52 },
 ];
 
-export const hitlValidationTasks = [
+export const hitlValidationTasks: HitlValidationTask[] = [
   {
     id: 'hitl-1',
     title: 'Confirm anomaly in Machine M-102 readings',

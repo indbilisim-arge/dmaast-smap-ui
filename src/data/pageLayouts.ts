@@ -92,7 +92,7 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
   },
   'value-chain': {
     pageId: 'value-chain',
-    label: 'Value Chain',
+    label: 'Value Chain DT',
     items: [
       { id: 'lead-time', title: 'End-to-End Lead Time', type: 'kpi' },
       { id: 'delivery-accuracy', title: 'Delivery Accuracy', type: 'kpi' },
@@ -116,7 +116,7 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
   },
   manufacturing: {
     pageId: 'manufacturing',
-    label: 'Manufacturing',
+    label: 'Manufacturing DT',
     // Işıl onayi 2026-08-30 — masterdata MON + usable% ile secildi.
     // CIKARILDI: equipment-availability · oee (tekil kart)  —  oee-breakdown ve
     //   machine-status 2026-08-31'de GERI ALINDI (unit_states / PackML).
@@ -156,7 +156,7 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
   },
   logistics: {
     pageId: 'logistics',
-    label: 'Logistics',
+    label: 'Logistics DT',
     // Işıl onayi 2026-08-30 — CIKARILDI: fleet-utilization · transport-cost (arac/navlun
     // verisi iki firmada da yok) · route-performance (rota performansi MON listesinde yok)
     items: [
@@ -186,7 +186,7 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
   },
   product: {
     pageId: 'product',
-    label: 'Product',
+    label: 'Product DT',
     // Işıl onayi 2026-08-30 — CIKARILDI: oee (Availability iki firmada da yok)
     items: [
       { id: 'yield-rate', title: 'Yield Rate', type: 'kpi' },

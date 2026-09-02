@@ -83,3 +83,13 @@ export interface SimulationResult {
   timestamp: Date;
   duration: number;
 }
+
+export interface HitlValidationTask {
+  id: string;
+  title: string;
+  description: string;
+  type: 'anomaly' | 'confirm' | 'override';
+  source: string;
+  timestamp: Date;
+  status: 'pending' | 'approved' | 'rejected';
+}

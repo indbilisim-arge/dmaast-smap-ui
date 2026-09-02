@@ -1,8 +1,6 @@
 import {
   BarChart,
   Bar,
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -13,7 +11,7 @@ import {
   Area,
   LabelList,
 } from 'recharts';
-import { Truck, Package, Clock, MapPin, AlertCircle, CheckCircle, ArrowUpRight } from 'lucide-react';
+import { Truck, Clock, MapPin, ArrowUpRight } from 'lucide-react';
 import Header from '../../components/layout/Header';
 import HelpPopover from '../../components/shared/HelpPopover';
 import FilterBar from '../../components/shared/FilterBar';

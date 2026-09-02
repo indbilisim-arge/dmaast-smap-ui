@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
   LineChart,
   Line,
@@ -7,7 +6,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Sankey,
   LabelList,
 } from 'recharts';
 import { ArrowRight, AlertCircle, CheckCircle, Clock, Package } from 'lucide-react';
@@ -62,7 +60,6 @@ function NodeCard({ node }: { node: DigitalTwinNode }) {
 }
 
 export default function ValueChainDT() {
-  const [selectedNode, setSelectedNode] = useState<DigitalTwinNode | null>(null);
   const layout = usePageLayout('value-chain');
   const visibleKpis = getVisibleKpis(layout.items);
   const showLeadTimeTrend = layout.isVisible('lead-time-trend');
