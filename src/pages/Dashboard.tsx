@@ -105,18 +105,32 @@ export default function Dashboard() {
     'defect-rate': { icon: Activity, color: 'text-primary-500', bg: 'bg-primary-50' },
     'lead-time': { icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50' },
   };
-  const QUICK_STAT_LABEL_KEYS: Record<string, string> = {
-    'production-throughput': 'dashboard.kpi.throughput',
-    'defect-rate': 'dashboard.kpi.defectRate',
-  };
-
+  /**
+   * ETIKET KURALI (Isil karari 2026-09-07): "arayuzle isimler ayni olsun."
+   *
+   * 1) Uyari kutusu Alert Center'in KENDI kelimesini kullanir —
+   *    `alerts.filter.critical` ('Critical' / 'Kritik' / 'Kritisch' ...).
+   *    Eski etiket `dashboard.alerts` = "Recent Alerts" idi ama kutu yalnizca
+   *    critical+onaylanmamis uyarilari sayiyor (bkz. `criticalAlerts`).
+   *    Isil ekranda gordu: Alert Center 2 uyari listelerken kutu 0 gosteriyordu.
+   *    Sayi dogruydu, AD yanlisti. Yeni ceviri uydurulmadi — anahtar 6 dilde zaten var.
+   *
+   * 2) KPI kutulari artik KATALOG adini kullanir (`kpi.label`) — yani hemen
+   *    altlarindaki KpiCard ne yaziyorsa kutuda da o yazar. Onceki halde kismi
+   *    bir ceviri haritasi vardi: throughput kutusu "Daily Throughput" derken
+   *    alttaki kart "Production Throughput" diyordu (ayni sayi, iki isim), ve
+   *    lead-time haritada olmadigi icin zaten katalog adina dusuyordu.
+   *    BEDELI KAYDA GECTI: `dashboard.kpi.throughput` / `.defectRate` cevirileri
+   *    artik cagrilmiyor; KPI adlari 6 dile cevrilene kadar (ayri is kalemi)
+   *    bu kutular Ingilizce kalir — kartlar zaten Ingilizce oldugu icin sayfa
+   *    kendi icinde TUTARLI olur. Anahtarlar silinmedi, ceviri isi gelince kullanilir.
+   */
   const quickStats = [
-    { label: t('dashboard.alerts'), value: String(criticalAlerts.length), icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
+    { label: t('alerts.filter.critical'), value: String(criticalAlerts.length), icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
     ...quickStatKpis.map((kpi) => {
       const style = QUICK_STAT_STYLES[kpi.id] ?? { icon: Activity, color: 'text-primary-500', bg: 'bg-primary-50' };
-      const labelKey = QUICK_STAT_LABEL_KEYS[kpi.id];
       return {
-        label: labelKey ? t(labelKey) : kpi.label,
+        label: kpi.label,
         value: `${kpi.value.toLocaleString()}${kpi.unit === '%' ? '%' : ` ${kpi.unit}`}`,
         icon: style.icon,
         color: style.color,
