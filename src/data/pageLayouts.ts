@@ -65,8 +65,27 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
     pageId: 'dashboard',
     label: 'Dashboard',
     items: [
-      { id: 'quick-stats', title: 'Quick Stats', type: 'widget' },
-      { id: 'kpi-primary', title: 'Primary KPIs', type: 'widget' },
+      // Isil is emri 2026-09-02 — quick-stats artik KPI tanimindan beslenir,
+      //   sabit dize tasimaz. OEE kutusu Defect Rate ile degistirildi:
+      //   OEE'nin Availability bacagi iki firmada da OLCULEMEZ
+      //   (KAM 'Machine No' 1502/1502 BOS · JPB 'CAPEMPR' 244.290 satirda hep 0),
+      //   Defect Rate ise iki firmada da gercek: KAM %0,79 (Receipts, pcs)
+      //   JPB %2,04 (NBPIEABIME/NBPIE, 5.779 satir). Olcum 2026-09-02.
+      { id: 'quick-stats', title: 'Quick Stats', type: 'widget',
+        kpiIds: ['production-throughput', 'defect-rate', 'lead-time'] },
+      // KPI listesi artik INDEX'ten degil BURADAN cozulur (kpiIds).
+      //   CIKARILDI 2026-09-02 (olcumle): equipment-availability · oee
+      //     -> Availability bacagi yok (yukaridaki olcum).
+      //   CIKARILDI: energy-per-unit · carbon-footprint
+      //     -> enerji/emisyon alani iki firmanin 3.200 kolonunda da YOK.
+      //     Bu dordu 2026-08-30/31'de DT sayfalarindan cikarilmisti; Dashboard
+      //     kayit defterine bakmadigi icin ekranda kalmislardi.
+      //   CIKARILDI: supplier-reliability
+      //     -> KAM'da FIILI kabul tarihi yok (yalniz 'Planned Receipt', plan),
+      //        JPB'de tedarikci master'i hic yok. Iki firmada da kurulamaz.
+      { id: 'kpi-primary', title: 'Primary KPIs', type: 'widget',
+        kpiIds: ['production-throughput', 'yield-rate', 'defect-rate',
+                 'lead-time', 'delivery-accuracy'] },
       { id: 'production-trend', title: 'Production Trend', type: 'widget' },
       // CIKARILDI 2026-08-31 (Isil): muda-analysis · waste-reduction.
       //   Gerekce: KPI tablolarinda karsiliklari YOK. MUDA'nin 7 kategorisinden
@@ -79,7 +98,15 @@ export const PAGE_LAYOUTS: Record<PageId, PageLayoutConfig> = {
       //   stogu). Widget SILINMEDI — Isil'in tarifiyle "survey" olarak yeniden
       //   kurulacak; tasarim gelince bu satir geri acilir.
       // { id: 'hitl-tasks', title: 'Validation Tasks', type: 'widget' },
-      { id: 'kpi-secondary', title: 'Secondary KPIs', type: 'widget' },
+      // Ikincil serit: KAM'da olculebilen, JPB'de kurulamayan iki kalem.
+      //   inventory-turnover -> KAM 'Total Inventory Value' 1.380 satir %100 dolu,
+      //     toplam 85.300.998. DIKKAT: bu bir DEGER'dir, DEVIR HIZI degil —
+      //     stok tek anlik goruntu (19 Kas 2024), devir hizi kurulamaz.
+      //   cost-efficiency -> KAM 'Total Cost/Base' + 'Net Amt/Base' 549 satir,
+      //     maliyet/gelir %37,36. JPB'de TAUXHOMMETP/TU 244.290 satirda hep 0.
+      //   Ikisinin de basligi ve tanimi duzeltilmeli — bkz. kart-veri-haritasi.md §5.5
+      { id: 'kpi-secondary', title: 'Secondary KPIs', type: 'widget', scope: 'kam',
+        kpiIds: ['inventory-turnover', 'cost-efficiency'] },
     ],
     roleDefaults: {
       manager: ['quick-stats', 'kpi-primary', 'production-trend', 'alerts', 'kpi-secondary'],
@@ -437,6 +464,25 @@ const kpiCatalog = new Map<string, KpiData>([
 
 export function getKpiData(kpiId: string): KpiData | undefined {
   return kpiCatalog.get(kpiId);
+}
+
+/**
+ * Bir widget'in cizecegi KPI'lar — kayit defterindeki `kpiIds` beyanindan.
+ *
+ * Isil is emri 2026-09-02 (Bulgu 1). Dashboard eskiden `dashboardKpis` dizisini
+ * index'ten diliyordu; bir KPI kayit defterinden cikarilsa bile ekranda kaliyordu.
+ * Artik tek kaynak kayit defteridir: burada yoksa cizilmez.
+ *
+ * `kpiIds` beyan edilmemisse BOS dondurur — sessizce mock diziye DUSMEZ.
+ * Bilinmeyen bir kimlik verilirse o kalem atlanir (kart kaydi ile KPI katalogu
+ * arasindaki kopukluk gorunur kalsin diye uydurma deger uretilmez).
+ */
+export function getWidgetKpis(pageId: PageId, widgetId: string): KpiData[] {
+  const item = PAGE_LAYOUTS[pageId]?.items.find((i) => i.id === widgetId);
+  if (!item?.kpiIds) return [];
+  return item.kpiIds
+    .map((id) => getKpiData(id))
+    .filter((kpi): kpi is KpiData => Boolean(kpi));
 }
 
 export function getVisibleKpis(items: LayoutItem[]): KpiData[] {

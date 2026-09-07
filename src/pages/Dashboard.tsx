@@ -17,7 +17,8 @@ import FilterBar from '../components/shared/FilterBar';
 import KpiCard from '../components/shared/KpiCard';
 import AlertCard from '../components/shared/AlertCard';
 import { TaskListWidget } from '../components/shared/HITLValidation';
-import { dashboardKpis, productionTrendData, hitlValidationTasks } from '../data/mockData';
+import { productionTrendData, hitlValidationTasks } from '../data/mockData';
+import { getWidgetKpis } from '../data/pageLayouts';
 import { getCompanyAlerts } from '../data/alerts';
 import { useCompany } from '../contexts/CompanyContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -88,11 +89,40 @@ export default function Dashboard() {
     size: WIDGET_SIZES[item.id] || 'medium',
   }));
 
+  /**
+   * KPI'lar artik kayit defterinden cozulur (Isil is emri 2026-09-02, Bulgu 1).
+   * Onceki hal `dashboardKpis.slice(0,8)` / `.slice(8)` idi: kart karari
+   * kayit defterinde yasiyordu ama Dashboard oraya BAKMIYORDU, bu yuzden
+   * 2026-08-30/31'de cikarilan dort KPI ekranda kalmisti.
+   */
+  const primaryKpis = getWidgetKpis('dashboard', 'kpi-primary');
+  const secondaryKpis = getWidgetKpis('dashboard', 'kpi-secondary');
+
+  // quick-stats de ayni kaynaktan beslenir — sabit dize tasimaz.
+  const quickStatKpis = getWidgetKpis('dashboard', 'quick-stats');
+  const QUICK_STAT_STYLES: Record<string, { icon: typeof Activity; color: string; bg: string }> = {
+    'production-throughput': { icon: TrendingUp, color: 'text-green-500', bg: 'bg-green-50' },
+    'defect-rate': { icon: Activity, color: 'text-primary-500', bg: 'bg-primary-50' },
+    'lead-time': { icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50' },
+  };
+  const QUICK_STAT_LABEL_KEYS: Record<string, string> = {
+    'production-throughput': 'dashboard.kpi.throughput',
+    'defect-rate': 'dashboard.kpi.defectRate',
+  };
+
   const quickStats = [
-    { label: t('dashboard.alerts'), value: criticalAlerts.length, icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
-    { label: t('dashboard.kpi.oee'), value: '87.5%', icon: Activity, color: 'text-primary-500', bg: 'bg-primary-50' },
-    { label: t('dashboard.kpi.throughput'), value: '1,248', icon: TrendingUp, color: 'text-green-500', bg: 'bg-green-50' },
-    { label: 'Avg Lead Time', value: '12.4 days', icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50' },
+    { label: t('dashboard.alerts'), value: String(criticalAlerts.length), icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
+    ...quickStatKpis.map((kpi) => {
+      const style = QUICK_STAT_STYLES[kpi.id] ?? { icon: Activity, color: 'text-primary-500', bg: 'bg-primary-50' };
+      const labelKey = QUICK_STAT_LABEL_KEYS[kpi.id];
+      return {
+        label: labelKey ? t(labelKey) : kpi.label,
+        value: `${kpi.value.toLocaleString()}${kpi.unit === '%' ? '%' : ` ${kpi.unit}`}`,
+        icon: style.icon,
+        color: style.color,
+        bg: style.bg,
+      };
+    }),
   ];
 
   const renderWidget = (widgetId: string) => {
@@ -126,7 +156,7 @@ export default function Dashboard() {
               <h3 className="font-semibold text-surface-900">Primary KPIs</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-              {dashboardKpis.slice(0, isLite ? 4 : 8).map((kpi) => (
+              {primaryKpis.slice(0, isLite ? 4 : primaryKpis.length).map((kpi) => (
                 <KpiCard key={kpi.id} kpi={kpi} />
               ))}
             </div>
@@ -227,7 +257,7 @@ export default function Dashboard() {
               <h3 className="font-semibold text-surface-900">Secondary KPIs</h3>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-              {dashboardKpis.slice(8).map((kpi) => (
+              {secondaryKpis.map((kpi) => (
                 <KpiCard key={kpi.id} kpi={kpi} />
               ))}
             </div>

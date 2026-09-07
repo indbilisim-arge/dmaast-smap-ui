@@ -30,6 +30,17 @@ export interface LayoutItemDefinition {
   type: LayoutItemType;
   /** Belirtilmezse 'both' kabul edilir */
   scope?: CardScope;
+  /**
+   * Bir 'widget' birden fazla KPI cizerse, HANGILERINI cizdigini burada beyan eder.
+   *
+   * Neden var (Isil is emri 2026-09-02): Dashboard eskiden KPI'lari
+   * `dashboardKpis.slice(0,8)` / `.slice(8)` ile INDEX'ten diliyordu; kayit
+   * defterine hic bakmiyordu. Sonucu: 2026-08-30/31'de "iki firmada da veri yok"
+   * gerekcesiyle DT sayfalarindan cikarilan dort KPI (equipment-availability,
+   * oee, energy-per-unit, carbon-footprint) Dashboard'da EKRANDA KALMISTI.
+   * Kart karari tek yerde yasasin diye KPI listesi artik kayit defterindedir.
+   */
+  kpiIds?: string[];
 }
 
 export interface LayoutItem extends LayoutItemDefinition {
